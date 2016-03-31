@@ -1,1 +1,6 @@
 /.project
+/.idea
+/.vagrant
+*.jar
+*.iml
+framework/framework
