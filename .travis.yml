@@ -7,3 +7,5 @@ script: cd client-java
 branches:
   only:
     - master
+notifications:
+  email: false
