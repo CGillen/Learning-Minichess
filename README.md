@@ -1,3 +1,7 @@
+#Learning-Minichess
+This project is an implementation of the teaching-minichess project: https://github.com/CodeRect/teaching-minichess
+The following is the README from teaching-minichess
+
 #teaching-minichess
 this project provides the framework for the advanced artificial intelligence class, in which an artificial chess player is ought to be implemented.
 
