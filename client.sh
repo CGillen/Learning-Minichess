@@ -1,4 +1,4 @@
 cd /vagrant/client-java/
 make
-java -jar client.jar &
+java -ea -jar client.jar &
 
