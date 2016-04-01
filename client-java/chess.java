@@ -1,7 +1,21 @@
 import java.util.Vector;
 
+import java.lang.Character;
+
 public class chess {
+	private static int turn;
+	private static String player;
+	private static char[][] board;
+
 	public static void reset() {
+		turn = 1;
+		player = "W";
+		board = new char[][] {	"kqbnr\n".toCharArray(),
+								"ppppp\n".toCharArray(),
+								".....\n".toCharArray(),
+								".....\n".toCharArray(),
+								"PPPPP\n".toCharArray(),
+								"RNBQK\n".toCharArray() };
 		// reset the state of the game / your internal variables - note that this function is highly dependent on your implementation
 	}
 	
@@ -9,20 +23,35 @@ public class chess {
 		// return the state of the game - one example is given below - note that the state has exactly 40 or 41 characters
 		
 		String strOut = "";
-		
-		strOut += "1 W\n";
-		strOut += "kqbnr\n";
-		strOut += "ppppp\n";
-		strOut += ".....\n";
-		strOut += ".....\n";
-		strOut += "PPPPP\n";
-		strOut += "RNBQK\n";
-		
+
+		strOut += Integer.toString(turn);
+		strOut += " ";
+		strOut += player + "\n";
+		strOut += new String(board[0]);
+		strOut += new String(board[1]);
+		strOut += new String(board[2]);
+		strOut += new String(board[3]);
+		strOut += new String(board[4]);
+		strOut += new String(board[5]);
+
 		return strOut;
 	}
 	
 	public static void boardSet(String strIn) {
 		// read the state of the game from the provided argument and set your internal variables accordingly - note that the state has exactly 40 or 41 characters
+
+		String[] strLines = strIn.split("\n");
+		String[] line1 = strLines[0].split(" ");
+
+		turn = Integer.parseInt(line1[0]);
+		player = line1[1];
+		board[0] = (strLines[1] + '\n').toCharArray();
+		board[1] = (strLines[2] + '\n').toCharArray();
+		board[2] = (strLines[3] + '\n').toCharArray();
+		board[3] = (strLines[4] + '\n').toCharArray();
+		board[4] = (strLines[5] + '\n').toCharArray();
+		board[5] = (strLines[6] + '\n').toCharArray();
+
 	}
 	
 	public static char winner() {
@@ -53,20 +82,22 @@ public class chess {
 	
 	public static boolean isEnemy(char charPiece) {
 		// with reference to the state of the game, return whether the provided argument is a piece from the side not on move - note that we could but should not use the other is() functions in here but probably
-		
-		return false;
+
+		boolean upper = Character.isUpperCase(charPiece);
+		return ((player.equals("W") && !upper) || (player.equals("B") && upper)) && charPiece != '.';
 	}
 	
 	public static boolean isOwn(char charPiece) {
 		// with reference to the state of the game, return whether the provided argument is a piece from the side on move - note that we could but should not use the other is() functions in here but probably
-		
-		return false;
+
+		boolean upper = Character.isUpperCase(charPiece);
+		return ((player.equals("W") && upper) || (player.equals("B") && !upper)) && charPiece != '.';
 	}
 	
 	public static boolean isNothing(char charPiece) {
 		// return whether the provided argument is not a piece / is an empty field - note that we could but should not use the other is() functions in here but probably
 		
-		return false;
+		return charPiece == '.';
 	}
 	
 	public static int eval() {
