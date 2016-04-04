@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.Vector;
 
 import java.lang.Character;
@@ -6,8 +7,10 @@ public class chess {
 	private static int turn;
 	private static String player;
 	private static char[][] board;
+	private static final HashMap<Character, Integer> piecePoints = new HashMap<>();
 
 	public static void reset() {
+		// reset the state of the game / your internal variables - note that this function is highly dependent on your implementation
 		turn = 1;
 		player = "W";
 		board = new char[][] {	"kqbnr\n".toCharArray(),
@@ -16,7 +19,20 @@ public class chess {
 								".....\n".toCharArray(),
 								"PPPPP\n".toCharArray(),
 								"RNBQK\n".toCharArray() };
-		// reset the state of the game / your internal variables - note that this function is highly dependent on your implementation
+		piecePoints.put('k', -100);	// Cost of black king
+		piecePoints.put('q', -80);	// Cost of black queen
+		piecePoints.put('b', -25);	// Cost of black bishop
+		piecePoints.put('n', -30);	// Cost of black knight
+		piecePoints.put('r', -30);	// Cost of black rook
+		piecePoints.put('p', -50);	// Cost of black pawn
+		piecePoints.put('K', 100);	// Cost of white king
+		piecePoints.put('Q', 80);	// Cost of white queen
+		piecePoints.put('B', 25);	// Cost of white bishop
+		piecePoints.put('N', 30);	// Cost of white knight
+		piecePoints.put('R', 30);	// Cost of white rook
+		piecePoints.put('P', 50);	// Cost of white pawn
+		piecePoints.put('.', 0);	// Cost of empty spot
+		piecePoints.put('\n', 0);	// Cost of newline
 	}
 	
 	public static String boardGet() {
@@ -56,8 +72,23 @@ public class chess {
 	
 	public static char winner() {
 		// determine the winner of the current state of the game and return '?' or '=' or 'W' or 'B' - note that we are returning a character and not a string
-		
-		return '?';
+		int boardPoints = 0;
+
+		for (int y=0; y<board.length;++y) {
+			for (int x=0; x<board[0].length ;++x) {
+				boardPoints += piecePoints.get(board[y][x]);
+			}
+		}
+
+		if (boardPoints > 0) {
+			return 'W';
+		} else if (boardPoints < 0) {
+			return 'B';
+		} else {
+			return '=';
+		}
+
+		//return '?';
 	}
 	
 	public static boolean isValid(int intX, int intY) {
