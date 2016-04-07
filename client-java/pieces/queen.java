@@ -10,6 +10,7 @@ import java.util.Vector;
 public class queen extends piece {
 	public queen(int x, int y, boolean white) {
 		super(x, y, white ? 'Q' : 'q');
+		value = 9;
 	}
 
 	@Override

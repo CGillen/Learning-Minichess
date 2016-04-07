@@ -10,6 +10,7 @@ import java.util.Vector;
 public class king extends piece {
 	public king(int x, int y, boolean white) {
 		super(x, y, white ? 'K' : 'k');
+		value = 1000;
 	}
 
 	@Override

@@ -9,6 +9,7 @@ public abstract class piece {
 	int x;
 	int y;
 	char type;
+	float value;
 
 	public piece(int x, int y, char type) {
 		this.x = x;
@@ -24,5 +25,9 @@ public abstract class piece {
 	}
 	public char getChar() {
 		return type;
+	}
+
+	public float getValue() {
+		return value;
 	}
 }

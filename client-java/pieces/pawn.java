@@ -11,6 +11,7 @@ public class pawn extends piece {
 
 	public pawn(int x, int y, boolean white) {
 		super(x, y, white ? 'P' : 'p');
+		value = 1;
 	}
 
 	@Override

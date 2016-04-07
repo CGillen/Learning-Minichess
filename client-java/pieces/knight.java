@@ -10,6 +10,7 @@ import java.util.Vector;
 public class knight extends piece {
 	public knight(int x, int y, boolean white) {
 		super(x, y, white ? 'N' : 'n');
+		value = 3;
 	}
 
 	@Override

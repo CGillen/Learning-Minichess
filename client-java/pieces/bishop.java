@@ -10,6 +10,7 @@ import java.util.Vector;
 public class bishop extends piece {
 	public bishop(int x, int y, boolean white) {
 		super(x, y, white ? 'B' : 'b');
+		value = 3;
 	}
 
 	@Override

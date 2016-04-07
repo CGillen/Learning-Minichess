@@ -8,6 +8,7 @@ import java.util.Vector;
 public class empty extends piece {
 	public empty(int x, int y) {
 		super(x, y, '.');
+		value = 0;
 	}
 
 	@Override

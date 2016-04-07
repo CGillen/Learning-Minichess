@@ -10,6 +10,7 @@ import java.util.Vector;
 public class rook extends piece {
 	public rook(int x, int y, boolean white) {
 		super(x, y, white ? 'R' : 'r');
+		value = 5;
 	}
 
 	@Override
