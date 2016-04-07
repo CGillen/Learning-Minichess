@@ -1,83 +1,27 @@
-import java.util.HashMap;
+import board.board;
+
 import java.util.Vector;
 
-import java.lang.Character;
-
 public class chess {
-	private static int turn;
-	private static String player;
-	private static char[][] board;
-	private static final HashMap<Character, Integer> piecePoints = new HashMap<>();
 
 	public static void reset() {
 		// reset the state of the game / your internal variables - note that this function is highly dependent on your implementation
-		turn = 1;
-		player = "W";
-		board = new char[][] {	"kqbnr\n".toCharArray(),
-								"ppppp\n".toCharArray(),
-								".....\n".toCharArray(),
-								".....\n".toCharArray(),
-								"PPPPP\n".toCharArray(),
-								"RNBQK\n".toCharArray() };
+		board.reset();
 	}
 	
 	public static String boardGet() {
 		// return the state of the game - one example is given below - note that the state has exactly 40 or 41 characters
-		
-		String strOut = "";
-
-		strOut += Integer.toString(turn);
-		strOut += " ";
-		strOut += player + "\n";
-		strOut += new String(board[0]);
-		strOut += new String(board[1]);
-		strOut += new String(board[2]);
-		strOut += new String(board[3]);
-		strOut += new String(board[4]);
-		strOut += new String(board[5]);
-
-		return strOut;
+		return board.getBoardStr();
 	}
 	
 	public static void boardSet(String strIn) {
 		// read the state of the game from the provided argument and set your internal variables accordingly - note that the state has exactly 40 or 41 characters
-
-		String[] strLines = strIn.split("\n");
-		String[] line1 = strLines[0].split(" ");
-
-		turn = Integer.parseInt(line1[0]);
-		player = line1[1];
-		board[0] = (strLines[1] + '\n').toCharArray();
-		board[1] = (strLines[2] + '\n').toCharArray();
-		board[2] = (strLines[3] + '\n').toCharArray();
-		board[3] = (strLines[4] + '\n').toCharArray();
-		board[4] = (strLines[5] + '\n').toCharArray();
-		board[5] = (strLines[6] + '\n').toCharArray();
-
+		board.setBoard(strIn);
 	}
 	
 	public static char winner() {
 		// determine the winner of the current state of the game and return '?' or '=' or 'W' or 'B' - note that we are returning a character and not a string
-		if (turn > 40) {
-			return '=';
-		}
-
-		int kings = 0;
-
-		for (int x=0; x < board.length; ++x) {
-			for (int y=0; y < board[0].length; ++y) {
-				kings = (board[x][y] == 'K') ? kings + 1 : kings;
-				kings = (board[x][y] == 'k') ? kings - 1 : kings;
- 			}
-		}
-
-		if (kings > 0) {
-			return 'W';
-		} else if (kings < 0) {
-			return 'B';
-		}
-
-		return '?';
+		return board.winner();
 	}
 	
 	public static boolean isValid(int intX, int intY) {
@@ -101,45 +45,33 @@ public class chess {
 	}
 	
 	public static boolean isEnemy(char charPiece) {
-		// with reference to the state of the game, return whether the provided argument is a piece from the side not on move - note that we could but should not use the other is() functions in here but probably
+		// with reference to the state of the game, return whether the provided argument is a pieces.piece from the side not on pieces.move - note that we could but should not use the other is() functions in here but probably
 
-		boolean upper = Character.isUpperCase(charPiece);
-		return ((player.equals("W") && !upper) || (player.equals("B") && upper)) && charPiece != '.';
+		return board.isEnemy(charPiece);
 	}
 	
 	public static boolean isOwn(char charPiece) {
-		// with reference to the state of the game, return whether the provided argument is a piece from the side on move - note that we could but should not use the other is() functions in here but probably
+		// with reference to the state of the game, return whether the provided argument is a pieces.piece from the side on pieces.move - note that we could but should not use the other is() functions in here but probably
 
-		boolean upper = Character.isUpperCase(charPiece);
-		return ((player.equals("W") && upper) || (player.equals("B") && !upper)) && charPiece != '.';
+		return board.isOwn(charPiece);
 	}
 	
 	public static boolean isNothing(char charPiece) {
-		// return whether the provided argument is not a piece / is an empty field - note that we could but should not use the other is() functions in here but probably
-		
-		return charPiece == '.';
+		// return whether the provided argument is not a pieces.piece / is an empty field - note that we could but should not use the other is() functions in here but probably
+
+		return board.isNothing(charPiece);
 	}
 	
 	public static int eval() {
-		// with reference to the state of the game, return the the evaluation score of the side on move - note that positive means an advantage while negative means a disadvantage
+		// with reference to the state of the game, return the the evaluation score of the side on pieces.move - note that positive means an advantage while negative means a disadvantage
 		
 		return 0;
 	}
 	
 	public static Vector<String> moves() {
-		// with reference to the state of the game and return the possible moves - one example is given below - note that a move has exactly 6 characters
+		// with reference to the state of the game and return the possible moves - one example is given below - note that a pieces.move has exactly 6 characters
 		
-		Vector<String> strOut = new Vector<String>();
-		
-		strOut.add("a2-a3\n");
-		strOut.add("b2-b3\n");
-		strOut.add("c2-c3\n");
-		strOut.add("d2-d3\n");
-		strOut.add("e2-e3\n");
-		strOut.add("b1-a3\n");
-		strOut.add("b1-c3\n");
-		
-		return strOut;
+		return board.moves();
 	}
 	
 	public static Vector<String> movesShuffled() {
@@ -155,34 +87,36 @@ public class chess {
 	}
 	
 	public static void move(String charIn) {
-		// perform the supplied move (for example "a5-a4\n") and update the state of the game / your internal variables accordingly - note that it advised to do a sanity check of the supplied move
+		// perform the supplied pieces.move (for example "a5-a4\n") and update the state of the game / your internal variables accordingly - note that it advised to do a sanity check of the supplied pieces.move
+
+		board.move(charIn);
 	}
 	
 	public static String moveRandom() {
-		// perform a random move and return it - one example output is given below - note that you can call the chess.movesShuffled() function as well as the chess.move() function in here
+		// perform a random pieces.move and return it - one example output is given below - note that you can call the chess.movesShuffled() function as well as the chess.pieces.move() function in here
 		
 		return "a2-a3\n";
 	}
 	
 	public static String moveGreedy() {
-		// perform a greedy move and return it - one example output is given below - note that you can call the chess.movesEvaluated() function as well as the chess.move() function in here
+		// perform a greedy pieces.move and return it - one example output is given below - note that you can call the chess.movesEvaluated() function as well as the chess.pieces.move() function in here
 		
 		return "a2-a3\n";
 	}
 	
 	public static String moveNegamax(int intDepth, int intDuration) {
-		// perform a negamax move and return it - one example output is given below - note that you can call the the other functions in here
+		// perform a negamax pieces.move and return it - one example output is given below - note that you can call the the other functions in here
 		
 		return "a2-a3\n";
 	}
 	
 	public static String moveAlphabeta(int intDepth, int intDuration) {
-		// perform a alphabeta move and return it - one example output is given below - note that you can call the the other functions in here
+		// perform a alphabeta pieces.move and return it - one example output is given below - note that you can call the the other functions in here
 		
 		return "a2-a3\n";
 	}
 	
 	public static void undo() {
-		// undo the last move and update the state of the game / your internal variables accordingly - note that you need to maintain an internal variable that keeps track of the previous history for this
+		// undo the last pieces.move and update the state of the game / your internal variables accordingly - note that you need to maintain an internal variable that keeps track of the previous history for this
 	}
 }
