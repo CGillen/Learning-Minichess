@@ -1,6 +1,6 @@
 package pieces;
 
-import board.board;
+import board.chess;
 
 import java.util.Vector;
 
@@ -23,20 +23,20 @@ public class rook extends piece {
 
 		for (int i = 1; i <= 5; ++i) {
 			if (x+i <= 4 && r) {
-				if (!board.isOwn(x+i,y)) moves.add(new move(x, y, i, 0));
-				if (!board.isNothing(x+i,y)) r = false;
+				if (!chess.isOwn(x+i,y)) moves.add(new move(x, y, i, 0));
+				if (!chess.isNothing(x+i,y)) r = false;
 			}
 			if (x-i >= 0 && l) {
-				if (!board.isOwn(x-i,y)) moves.add(new move(x, y, -i, 0));
-				if (!board.isNothing(x-i,y)) l = false;
+				if (!chess.isOwn(x-i,y)) moves.add(new move(x, y, -i, 0));
+				if (!chess.isNothing(x-i,y)) l = false;
 			}
 			if (y+i <= 5 && u) {
-				if (!board.isOwn(x,y+i)) moves.add(new move(x, y, 0, i));
-				if (!board.isNothing(x,y+i)) u = false;
+				if (!chess.isOwn(x,y+i)) moves.add(new move(x, y, 0, i));
+				if (!chess.isNothing(x,y+i)) u = false;
 			}
 			if (y-i >= 0 && d) {
-				if (!board.isOwn(x,y-i)) moves.add(new move(x, y, 0, -i));
-				if (!board.isNothing(x,y-i)) d = false;
+				if (!chess.isOwn(x,y-i)) moves.add(new move(x, y, 0, -i));
+				if (!chess.isNothing(x,y-i)) d = false;
 			}
 		}
 

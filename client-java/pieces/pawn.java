@@ -1,6 +1,6 @@
 package pieces;
 
-import board.board;
+import board.chess;
 
 import java.util.Vector;
 
@@ -19,9 +19,9 @@ public class pawn extends piece {
 		Vector moves = new Vector<>();
 		int yDirection = Character.isUpperCase(type) ? 1 : -1;
 
-		if (x < 4 && board.isEnemy(x + 1, y + yDirection)) moves.add(new move(x, y, 1, yDirection));
-		if (x > 0 && board.isEnemy(x - 1, y + yDirection)) moves.add(new move(x, y, -1, yDirection));
-		if (board.isNothing(x, y+yDirection)) moves.add(new move(x, y, 0, yDirection));
+		if (x < 4 && chess.isEnemy(x + 1, y + yDirection)) moves.add(new move(x, y, 1, yDirection));
+		if (x > 0 && chess.isEnemy(x - 1, y + yDirection)) moves.add(new move(x, y, -1, yDirection));
+		if (chess.isNothing(x, y+yDirection)) moves.add(new move(x, y, 0, yDirection));
 
 		return moves;
 	}
