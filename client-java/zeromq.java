@@ -1,5 +1,7 @@
 import java.util.Vector;
 
+import board.chess;
+
 import org.json.JSONObject;
 import org.zeromq.ZMQ;
 
