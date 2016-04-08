@@ -151,27 +151,20 @@ public class chess {
 	
 	public static int eval() {
 		// with reference to the state of the game, return the the evaluation score of the side on pieces.move - note that positive means an advantage while negative means a disadvantage
-		float sum = 0;
+		int bSum = 0;
+		int wSum = 0;
 
 		for (int y=board.length-1; y>=0; --y) {
 			for (int x=0; x<board[0].length; ++x) {
-				if (player.equals("W")) {
-					if (Character.isUpperCase(board[y][x].getChar())) {
-						sum += board[y][x].getValue();
-					} else {
-						sum -= board[y][x].getValue();
-					}
+				if (Character.isUpperCase(board[y][x].getChar())) {
+					wSum += board[y][x].getValue();
 				} else {
-					if (Character.isUpperCase(board[y][x].getChar())) {
-						sum -= board[y][x].getValue();
-					} else {
-						sum += board[y][x].getValue();
-					}
+					bSum += board[y][x].getValue();
 				}
 			}
 		}
 
-		return (int) sum;
+		return player.equals("W") ? wSum - bSum : bSum - wSum;
 	}
 	
 	public static Vector<String> moves() {
