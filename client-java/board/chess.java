@@ -4,6 +4,7 @@ import pieces.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 import java.util.Vector;
 
 public class chess {
@@ -11,6 +12,7 @@ public class chess {
 	private static String player;
 	private static piece[][] board;
 	private static final Map<Character, Integer> piecePoints = new HashMap<>();
+	private static Stack<move> prevMoves = new Stack<>();
 
 	public static void reset() {
 		// reset the state of the game / your internal variables - note that this function is highly dependent on your implementation
@@ -218,7 +220,7 @@ public class chess {
 		Vector<move> moves = board[yStart][xStart].possibleMoves();
 		int xDiff = xEnd - xStart;
 		int yDiff = yEnd - yStart;
-		move givenMove = new move(xStart, yStart, xDiff, yDiff);
+		move givenMove = new move(xStart, yStart, xDiff, yDiff, board[yStart][xStart].getChar(), board[yEnd][xEnd].getChar(), player.equals("W"));
 
 		Vector<String> moveStrings = new Vector<>(moves.size());
 		for (move m: moves) {
@@ -239,6 +241,7 @@ public class chess {
 			}
 			turn += player.equals("W") ? 0 : 1;
 			player = (player.equals("W")) ? "B" : "W";
+			prevMoves.push(givenMove);
 		}
 	}
 	
@@ -268,5 +271,19 @@ public class chess {
 	
 	public static void undo() {
 		// undo the last pieces.move and update the state of the game / your internal variables accordingly - note that you need to maintain an internal variable that keeps track of the previous history for this
+		move toUndo = prevMoves.pop();
+		String charIn = toUndo.toString();
+		int xStart = charIn.charAt(0) - 'a';
+		int xEnd = charIn.charAt(3) - 'a';
+		int yStart = Character.getNumericValue(charIn.charAt(1)) - 1;
+		int yEnd = Character.getNumericValue(charIn.charAt(4)) - 1;
+
+		// Reset board positions
+		board[yStart][xStart] = toUndo.original;
+		board[yEnd][xEnd] = toUndo.capture;
+
+		// Reset turn tracking
+		turn -= player.equals("W") ? 1 : 0;
+		player = (player.equals("W")) ? "B" : "W";
 	}
 }
