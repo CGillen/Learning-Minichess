@@ -1,6 +1,6 @@
 package pieces;
 
-import board.board;
+import board.chess;
 
 import java.util.Vector;
 
@@ -18,16 +18,16 @@ public class king extends piece {
 		Vector moves = new Vector<>();
 
 		// Cardinal directions
-		if (x+1 <= 4 && !board.isOwn(x+1, y)) moves.add(new move(x, y, 1, 0));
-		if (x-1 >= 0 && !board.isOwn(x-1, y)) moves.add(new move(x, y, -1, 0));
-		if (y+1 <= 5 && !board.isOwn(x, y+1)) moves.add(new move(x, y, 0, 1));
-		if (y-1 >= 0 && !board.isOwn(x, y-1)) moves.add(new move(x, y, 0, -1));
+		if (x+1 <= 4 && !chess.isOwn(x+1, y)) moves.add(new move(x, y, 1, 0));
+		if (x-1 >= 0 && !chess.isOwn(x-1, y)) moves.add(new move(x, y, -1, 0));
+		if (y+1 <= 5 && !chess.isOwn(x, y+1)) moves.add(new move(x, y, 0, 1));
+		if (y-1 >= 0 && !chess.isOwn(x, y-1)) moves.add(new move(x, y, 0, -1));
 
 		// Diagonal directions
-		if (x+1 <= 4 && y+1 <= 5 && !board.isOwn(x+1, y+1)) moves.add(new move(x, y, 1, 1));
-		if (x+1 <= 4 && y-1 >= 0 && !board.isOwn(x+1, y-1)) moves.add(new move(x, y, 1, -1));
-		if (x-1 >= 0 && y+1 <= 5 && !board.isOwn(x-1, y+1)) moves.add(new move(x, y, -1, 1));
-		if (x-1 >= 0 && y-1 >= 0 && !board.isOwn(x-1, y-1)) moves.add(new move(x, y, -1, -1));
+		if (x+1 <= 4 && y+1 <= 5 && !chess.isOwn(x+1, y+1)) moves.add(new move(x, y, 1, 1));
+		if (x+1 <= 4 && y-1 >= 0 && !chess.isOwn(x+1, y-1)) moves.add(new move(x, y, 1, -1));
+		if (x-1 >= 0 && y+1 <= 5 && !chess.isOwn(x-1, y+1)) moves.add(new move(x, y, -1, 1));
+		if (x-1 >= 0 && y-1 >= 0 && !chess.isOwn(x-1, y-1)) moves.add(new move(x, y, -1, -1));
 
 		return moves;
 	}
