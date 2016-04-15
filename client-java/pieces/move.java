@@ -3,15 +3,15 @@ package pieces;
 /**
  * Created by Corey on 4/6/2016.
  */
-public class move {
+public class Move {
 	private int xStart, yStart, xEnd, yEnd;
-	public piece capture, original;
+	public Piece capture, original;
 
-	public move(int xStart, int yStart, int xMove, int yMove) {
+	public Move(int xStart, int yStart, int xMove, int yMove) {
 		this(xStart, yStart, xMove, yMove, '.', '.', true);
 	}
 
-	public move(int xStart, int yStart, int xMove, int yMove, char original, char capture, boolean white) {
+	public Move(int xStart, int yStart, int xMove, int yMove, char original, char capture, boolean white) {
 		this.xStart = xStart;
 		this.yStart = yStart;
 		this.xEnd = this.xStart + xMove;
@@ -19,20 +19,20 @@ public class move {
 
 		switch (Character.toLowerCase(original)) {
 			case 'p': this.original = new pawn(xEnd, yEnd, white); break;
-			case 'r': this.original = new rook(xEnd, yEnd, white); break;
-			case 'n': this.original = new knight(xEnd, yEnd, white); break;
-			case 'b': this.original = new bishop(xEnd, yEnd, white); break;
-			case 'q': this.original = new queen(xEnd, yEnd, white); break;
-			case 'k': this.original = new king(xEnd, yEnd, white); break;
+			case 'r': this.original = new Rook(xEnd, yEnd, white); break;
+			case 'n': this.original = new Knight(xEnd, yEnd, white); break;
+			case 'b': this.original = new Bishop(xEnd, yEnd, white); break;
+			case 'q': this.original = new Queen(xEnd, yEnd, white); break;
+			case 'k': this.original = new King(xEnd, yEnd, white); break;
 		}
 		switch (Character.toLowerCase(capture)) {
 			case 'p': this.capture = new pawn(xStart, yStart, !white); break;
-			case 'r': this.capture = new rook(xStart, yStart, !white); break;
-			case 'n': this.capture = new knight(xStart, yStart, !white); break;
-			case 'b': this.capture = new bishop(xStart, yStart, !white); break;
-			case 'q': this.capture = new queen(xStart, yStart, !white); break;
-			case 'k': this.capture = new king(xStart, yStart, !white); break;
-			case '.': this.capture = new empty(xStart, yStart); break;
+			case 'r': this.capture = new Rook(xStart, yStart, !white); break;
+			case 'n': this.capture = new Knight(xStart, yStart, !white); break;
+			case 'b': this.capture = new Bishop(xStart, yStart, !white); break;
+			case 'q': this.capture = new Queen(xStart, yStart, !white); break;
+			case 'k': this.capture = new King(xStart, yStart, !white); break;
+			case '.': this.capture = new Empty(xStart, yStart); break;
 		}
 	}
 

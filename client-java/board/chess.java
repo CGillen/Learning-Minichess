@@ -2,29 +2,26 @@ package board;
 
 import pieces.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
 
 public class chess {
 	private static int turn;
 	private static String player;
-	private static piece[][] board;
+	private static Piece[][] board;
 	private static final Map<Character, Integer> piecePoints = new HashMap<>();
-	private static Stack<move> prevMoves = new Stack<>();
+	private static Stack<Move> prevMoves = new Stack<>();
 
 	public static void reset() {
 		// reset the state of the game / your internal variables - note that this function is highly dependent on your implementation
 		turn = 1;
 		player = "W";
-		board = new piece[][]{
-				{new rook(0, 0, true), new knight(1, 0, true), new bishop(2, 0, true), new queen(3, 0, true), new king(4, 0, true)},
+		board = new Piece[][]{
+				{new Rook(0, 0, true), new Knight(1, 0, true), new Bishop(2, 0, true), new Queen(3, 0, true), new King(4, 0, true)},
 				{new pawn(0, 1, true), new pawn(1, 1, true), new pawn(2, 1, true), new pawn(3, 1, true), new pawn(4, 1, true)},
-				{new empty(0, 2), new empty(1, 2), new empty(2, 2), new empty(3, 2), new empty(4, 2)},
-				{new empty(0, 3), new empty(1, 3), new empty(2, 3), new empty(3, 3), new empty(4, 3)},
+				{new Empty(0, 2), new Empty(1, 2), new Empty(2, 2), new Empty(3, 2), new Empty(4, 2)},
+				{new Empty(0, 3), new Empty(1, 3), new Empty(2, 3), new Empty(3, 3), new Empty(4, 3)},
 				{new pawn(0, 4, false), new pawn(1, 4, false), new pawn(2, 4, false), new pawn(3, 4, false), new pawn(4, 4, false)},
-				{new king(0, 5, false), new queen(1, 5, false), new bishop(2, 5, false), new knight(3, 5, false), new rook(4, 5, false)},
+				{new King(0, 5, false), new Queen(1, 5, false), new Bishop(2, 5, false), new Knight(3, 5, false), new Rook(4, 5, false)},
 		};
 	}
 	
@@ -69,16 +66,16 @@ public class chess {
 					case 'P':
 					case 'p': board[y][x] = new pawn(x, y, Character.isUpperCase(toConsider)); break;
 					case 'K':
-					case 'k': board[y][x] = new king(x, y, Character.isUpperCase(toConsider)); break;
+					case 'k': board[y][x] = new King(x, y, Character.isUpperCase(toConsider)); break;
 					case 'Q':
-					case 'q': board[y][x] = new queen(x, y, Character.isUpperCase(toConsider)); break;
+					case 'q': board[y][x] = new Queen(x, y, Character.isUpperCase(toConsider)); break;
 					case 'B':
-					case 'b': board[y][x] = new bishop(x, y, Character.isUpperCase(toConsider)); break;
+					case 'b': board[y][x] = new Bishop(x, y, Character.isUpperCase(toConsider)); break;
 					case 'N':
-					case 'n': board[y][x] = new knight(x, y, Character.isUpperCase(toConsider)); break;
+					case 'n': board[y][x] = new Knight(x, y, Character.isUpperCase(toConsider)); break;
 					case 'R':
-					case 'r': board[y][x] = new rook(x, y, Character.isUpperCase(toConsider)); break;
-					case '.': board[y][x] = new empty(x, y); break;
+					case 'r': board[y][x] = new Rook(x, y, Character.isUpperCase(toConsider)); break;
+					case '.': board[y][x] = new Empty(x, y); break;
 				}
 			}
 		}
@@ -130,7 +127,7 @@ public class chess {
 
 	public static boolean isEnemy(int x, int y) { return isEnemy(board[y][x].getChar()); }
 	public static boolean isEnemy(char charPiece) {
-		// with reference to the state of the game, return whether the provided argument is a pieces.piece from the side not on pieces.move - note that we could but should not use the other is() functions in here but probably
+		// with reference to the state of the game, return whether the provided argument is a pieces.Piece from the side not on pieces.Move - note that we could but should not use the other is() functions in here but probably
 
 		boolean upper = Character.isUpperCase(charPiece);
 		return ((player.equals("W") && !upper) || (player.equals("B") && upper)) && charPiece != '.';
@@ -138,7 +135,7 @@ public class chess {
 
 	public static boolean isOwn(int x, int y) { return isOwn(board[y][x].getChar()); }
 	public static boolean isOwn(char charPiece) {
-		// with reference to the state of the game, return whether the provided argument is a pieces.piece from the side on pieces.move - note that we could but should not use the other is() functions in here but probably
+		// with reference to the state of the game, return whether the provided argument is a pieces.Piece from the side on pieces.Move - note that we could but should not use the other is() functions in here but probably
 
 		boolean upper = Character.isUpperCase(charPiece);
 		return ((player.equals("W") && upper) || (player.equals("B") && !upper)) && charPiece != '.';
@@ -146,13 +143,13 @@ public class chess {
 
 	public static boolean isNothing(int x, int y) { return isNothing(board[y][x].getChar()); }
 	public static boolean isNothing(char charPiece) {
-		// return whether the provided argument is not a pieces.piece / is an empty field - note that we could but should not use the other is() functions in here but probably
+		// return whether the provided argument is not a pieces.Piece / is an Empty field - note that we could but should not use the other is() functions in here but probably
 
 		return charPiece == '.';
 	}
 	
 	public static int eval() {
-		// with reference to the state of the game, return the the evaluation score of the side on pieces.move - note that positive means an advantage while negative means a disadvantage
+		// with reference to the state of the game, return the the evaluation score of the side on pieces.Move - note that positive means an advantage while negative means a disadvantage
 		int bSum = 0;
 		int wSum = 0;
 
@@ -170,21 +167,21 @@ public class chess {
 	}
 	
 	public static Vector<String> moves() {
-		// with reference to the state of the game and return the possible moves - one example is given below - note that a pieces.move has exactly 6 characters
+		// with reference to the state of the game and return the possible moves - one example is given below - note that a pieces.Move has exactly 6 characters
 
 		Vector<String> strOut = new Vector<String>();
-		Vector<move> toConsider = null;
+		Vector<Move> toConsider = null;
 
 		for (int y=board.length-1; y>=0; --y) {
 			for (int x=0; x<board[0].length; ++x) {
 				if (player.equals("W") && Character.isUpperCase(board[y][x].getChar())) {
 					toConsider = board[y][x].possibleMoves();
-					for (move m : toConsider) {
+					for (Move m : toConsider) {
 						strOut.add(m.toString());
 					}
 				} else if (player.equals("B") && Character.isLowerCase(board[y][x].getChar())) {
 					toConsider = board[y][x].possibleMoves();
-					for (move m : toConsider) {
+					for (Move m : toConsider) {
 						strOut.add(m.toString());
 					}
 				}
@@ -193,21 +190,30 @@ public class chess {
 
 		return strOut;
 	}
+
+	public static Vector<ScoredMove> movesScored() {
+		// with reference to the state of the game and return the possible moves with the eval score of the board after the move
+
+		Vector<ScoredMove> moves = new Vector<ScoredMove>();
+	}
 	
 	public static Vector<String> movesShuffled() {
 		// with reference to the state of the game, determine the possible moves and shuffle them before returning them - note that you can call the board.chess.moves() function in here
-		
-		return new Vector<String>();
+
+		Vector<String> toReturn = moves();
+		Collections.shuffle(toReturn);
+
+		return toReturn;
 	}
 	
 	public static Vector<String> movesEvaluated() {
 		// with reference to the state of the game, determine the possible moves and sort them in order of an increasing evaluation score before returning them - note that you can call the board.chess.moves() function in here
-		
+
 		return new Vector<String>();
 	}
 
 	public static void move(String charIn) {
-		// perform the supplied pieces.move (for example "a5-a4\n") and update the state of the game / your internal variables accordingly - note that it advised to do a sanity check of the supplied pieces.move
+		// perform the supplied pieces.Move (for example "a5-a4\n") and update the state of the game / your internal variables accordingly - note that it advised to do a sanity check of the supplied pieces.Move
 
 		int xStart = charIn.charAt(0) - 'a';
 		int xEnd = charIn.charAt(3) - 'a';
@@ -217,26 +223,26 @@ public class chess {
 		char piece = board[yStart][xStart].getChar();
 		if (isEnemy(piece)) return;
 
-		Vector<move> moves = board[yStart][xStart].possibleMoves();
+		Vector<Move> moves = board[yStart][xStart].possibleMoves();
 		int xDiff = xEnd - xStart;
 		int yDiff = yEnd - yStart;
-		move givenMove = new move(xStart, yStart, xDiff, yDiff, board[yStart][xStart].getChar(), board[yEnd][xEnd].getChar(), player.equals("W"));
+		Move givenMove = new Move(xStart, yStart, xDiff, yDiff, board[yStart][xStart].getChar(), board[yEnd][xEnd].getChar(), player.equals("W"));
 
 		Vector<String> moveStrings = new Vector<>(moves.size());
-		for (move m: moves) {
+		for (Move m: moves) {
 			moveStrings.add(m.toString());
 		}
 
 		if (moveStrings.contains(givenMove.toString())) {
 			board[yStart][xStart].move(xDiff, yDiff);
 			board[yEnd][xEnd] = board[yStart][xStart];
-			board[yStart][xStart] = new empty(xStart, yStart);
+			board[yStart][xStart] = new Empty(xStart, yStart);
 			// Special case: pawn promotion
 			if (Character.toLowerCase(piece) == 'p') {
 				if (yEnd == 5 && player.equals("W")) {
-					board[yEnd][xEnd] = new queen(xEnd, yEnd, true);
+					board[yEnd][xEnd] = new Queen(xEnd, yEnd, true);
 				} else if (yEnd == 0 && player.equals("B")) {
-					board[yEnd][xEnd] = new queen(xEnd, yEnd, false);
+					board[yEnd][xEnd] = new Queen(xEnd, yEnd, false);
 				}
 			}
 			turn += player.equals("W") ? 0 : 1;
@@ -246,32 +252,32 @@ public class chess {
 	}
 	
 	public static String moveRandom() {
-		// perform a random pieces.move and return it - one example output is given below - note that you can call the board.chess.movesShuffled() function as well as the board.chess.pieces.move() function in here
+		// perform a random pieces.Move and return it - one example output is given below - note that you can call the board.chess.movesShuffled() function as well as the board.chess.pieces.Move() function in here
 		
 		return "a2-a3\n";
 	}
 	
 	public static String moveGreedy() {
-		// perform a greedy pieces.move and return it - one example output is given below - note that you can call the board.chess.movesEvaluated() function as well as the board.chess.pieces.move() function in here
+		// perform a greedy pieces.Move and return it - one example output is given below - note that you can call the board.chess.movesEvaluated() function as well as the board.chess.pieces.Move() function in here
 		
 		return "a2-a3\n";
 	}
 	
 	public static String moveNegamax(int intDepth, int intDuration) {
-		// perform a negamax pieces.move and return it - one example output is given below - note that you can call the the other functions in here
+		// perform a negamax pieces.Move and return it - one example output is given below - note that you can call the the other functions in here
 		
 		return "a2-a3\n";
 	}
 	
 	public static String moveAlphabeta(int intDepth, int intDuration) {
-		// perform a alphabeta pieces.move and return it - one example output is given below - note that you can call the the other functions in here
+		// perform a alphabeta pieces.Move and return it - one example output is given below - note that you can call the the other functions in here
 		
 		return "a2-a3\n";
 	}
 	
 	public static void undo() {
-		// undo the last pieces.move and update the state of the game / your internal variables accordingly - note that you need to maintain an internal variable that keeps track of the previous history for this
-		move toUndo = prevMoves.pop();
+		// undo the last pieces.Move and update the state of the game / your internal variables accordingly - note that you need to maintain an internal variable that keeps track of the previous history for this
+		Move toUndo = prevMoves.pop();
 		String charIn = toUndo.toString();
 		int xStart = charIn.charAt(0) - 'a';
 		int xEnd = charIn.charAt(3) - 'a';
