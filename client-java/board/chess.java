@@ -17,10 +17,10 @@ public class chess {
 		player = "W";
 		board = new Piece[][]{
 				{new Rook(0, 0, true), new Knight(1, 0, true), new Bishop(2, 0, true), new Queen(3, 0, true), new King(4, 0, true)},
-				{new pawn(0, 1, true), new pawn(1, 1, true), new pawn(2, 1, true), new pawn(3, 1, true), new pawn(4, 1, true)},
+				{new Pawn(0, 1, true), new Pawn(1, 1, true), new Pawn(2, 1, true), new Pawn(3, 1, true), new Pawn(4, 1, true)},
 				{new Empty(0, 2), new Empty(1, 2), new Empty(2, 2), new Empty(3, 2), new Empty(4, 2)},
 				{new Empty(0, 3), new Empty(1, 3), new Empty(2, 3), new Empty(3, 3), new Empty(4, 3)},
-				{new pawn(0, 4, false), new pawn(1, 4, false), new pawn(2, 4, false), new pawn(3, 4, false), new pawn(4, 4, false)},
+				{new Pawn(0, 4, false), new Pawn(1, 4, false), new Pawn(2, 4, false), new Pawn(3, 4, false), new Pawn(4, 4, false)},
 				{new King(0, 5, false), new Queen(1, 5, false), new Bishop(2, 5, false), new Knight(3, 5, false), new Rook(4, 5, false)},
 		};
 	}
@@ -64,7 +64,7 @@ public class chess {
 				toConsider = boardLines.get(y).charAt(x);
 				switch (toConsider) {
 					case 'P':
-					case 'p': board[y][x] = new pawn(x, y, Character.isUpperCase(toConsider)); break;
+					case 'p': board[y][x] = new Pawn(x, y, Character.isUpperCase(toConsider)); break;
 					case 'K':
 					case 'k': board[y][x] = new King(x, y, Character.isUpperCase(toConsider)); break;
 					case 'Q':
@@ -195,6 +195,32 @@ public class chess {
 		// with reference to the state of the game and return the possible moves with the eval score of the board after the move
 
 		Vector<ScoredMove> moves = new Vector<ScoredMove>();
+		Vector<Move> toConsider = null;
+		int score;
+
+		for (int y=board.length-1; y>=0; --y) {
+			for (int x=0; x<board[0].length; ++x) {
+				if (player.equals("W") && Character.isUpperCase(board[y][x].getChar())) {
+					toConsider = board[y][x].possibleMoves();
+					for (Move m : toConsider) {
+						move(m.toString());
+						score = eval();
+						undo();
+						moves.add(new ScoredMove(m, score));
+					}
+				} else if (player.equals("B") && Character.isLowerCase(board[y][x].getChar())) {
+					toConsider = board[y][x].possibleMoves();
+					for (Move m : toConsider) {
+						move(m.toString());
+						score = eval();
+						undo();
+						moves.add(new ScoredMove(m, score));
+					}
+				}
+			}
+		}
+
+		return moves;
 	}
 	
 	public static Vector<String> movesShuffled() {
@@ -209,7 +235,21 @@ public class chess {
 	public static Vector<String> movesEvaluated() {
 		// with reference to the state of the game, determine the possible moves and sort them in order of an increasing evaluation score before returning them - note that you can call the board.chess.moves() function in here
 
-		return new Vector<String>();
+		Vector<ScoredMove> toSort = movesScored();
+		Vector<String> toReturn = new Vector<String>();
+
+		Collections.sort(toSort, new Comparator<ScoredMove>() {
+			@Override
+			public int compare(ScoredMove o1, ScoredMove o2) {
+				return o1.score - o2.score;
+			}
+		});
+
+		for (ScoredMove m : toSort) {
+			toReturn.add(m.move.toString());
+		}
+
+		return toReturn;
 	}
 
 	public static void move(String charIn) {
@@ -237,7 +277,7 @@ public class chess {
 			board[yStart][xStart].move(xDiff, yDiff);
 			board[yEnd][xEnd] = board[yStart][xStart];
 			board[yStart][xStart] = new Empty(xStart, yStart);
-			// Special case: pawn promotion
+			// Special case: Pawn promotion
 			if (Character.toLowerCase(piece) == 'p') {
 				if (yEnd == 5 && player.equals("W")) {
 					board[yEnd][xEnd] = new Queen(xEnd, yEnd, true);
@@ -284,8 +324,12 @@ public class chess {
 		int yStart = Character.getNumericValue(charIn.charAt(1)) - 1;
 		int yEnd = Character.getNumericValue(charIn.charAt(4)) - 1;
 
+		int xDiff = xStart - xEnd;
+		int yDiff = yStart - yEnd;
+
 		// Reset board positions
 		board[yStart][xStart] = toUndo.original;
+		board[yStart][xStart].move(xDiff, yDiff);
 		board[yEnd][xEnd] = toUndo.capture;
 
 		// Reset turn tracking

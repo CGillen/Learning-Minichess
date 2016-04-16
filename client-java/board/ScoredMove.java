@@ -6,6 +6,11 @@ import pieces.Move;
  * Created by Corey on 4/14/2016.
  */
 public class ScoredMove {
-	private Move move;
-	private int score;
+	public Move move;
+	public int score;
+
+	ScoredMove(Move move, int score) {
+		this.move = move;
+		this.score = score;
+	}
 }

@@ -7,9 +7,9 @@ import java.util.Vector;
 /**
  * Created by Corey on 4/6/2016.
  */
-public class pawn extends Piece {
+public class Pawn extends Piece {
 
-	public pawn(int x, int y, boolean white) {
+	public Pawn(int x, int y, boolean white) {
 		super(x, y, white ? 'P' : 'p');
 		value = 1;
 	}

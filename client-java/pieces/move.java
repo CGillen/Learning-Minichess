@@ -18,7 +18,7 @@ public class Move {
 		this.yEnd = this.yStart + yMove;
 
 		switch (Character.toLowerCase(original)) {
-			case 'p': this.original = new pawn(xEnd, yEnd, white); break;
+			case 'p': this.original = new Pawn(xEnd, yEnd, white); break;
 			case 'r': this.original = new Rook(xEnd, yEnd, white); break;
 			case 'n': this.original = new Knight(xEnd, yEnd, white); break;
 			case 'b': this.original = new Bishop(xEnd, yEnd, white); break;
@@ -26,7 +26,7 @@ public class Move {
 			case 'k': this.original = new King(xEnd, yEnd, white); break;
 		}
 		switch (Character.toLowerCase(capture)) {
-			case 'p': this.capture = new pawn(xStart, yStart, !white); break;
+			case 'p': this.capture = new Pawn(xStart, yStart, !white); break;
 			case 'r': this.capture = new Rook(xStart, yStart, !white); break;
 			case 'n': this.capture = new Knight(xStart, yStart, !white); break;
 			case 'b': this.capture = new Bishop(xStart, yStart, !white); break;
