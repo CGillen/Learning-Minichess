@@ -389,7 +389,81 @@ public class chess {
 	public static String moveAlphabeta(int intDepth, int intDuration) {
 		// perform a alphabeta pieces.Move and return it - one example output is given below - note that you can call the the other functions in here
 
-		return "a2-a3\n";
+		long startTime = System.currentTimeMillis();
+		String best = null;
+		String bestSoFar = null;
+		int temp = 0;
+		int alpha = -500000000;
+		int alphaSoFar = -500000000;
+		int beta = 500000000;
+		Vector<String> moves = movesShuffled();
+
+		if (intDepth >= 0) {
+			for (String move : moves) {
+				move(move);
+				temp = -moveAlphabetaRecursive(intDepth - 1, - beta, -alpha);
+				undo();
+
+				if (temp > alpha) {
+					best = move;
+					alpha = temp;
+					System.out.println("Score: " + alpha + " New best move: " + best);
+				}
+			}
+		} else {
+			for (int i=4; i<15 && System.currentTimeMillis() - startTime < timePerTurn/3; ++i) {
+				System.out.println("Depth: " + i);
+				for (String move : moves) {
+					if (System.currentTimeMillis() - startTime > timePerTurn) {
+						System.out.println("Out of time. Canceling.");
+						break;
+					}
+					move(move);
+					temp = -moveAlphabetaRecursive(i - 1, - beta, -alpha);
+					undo();
+
+					if (temp > alpha) {
+						bestSoFar = move;
+						alphaSoFar = temp;
+					}
+				}
+				if (alphaSoFar > alpha && System.currentTimeMillis() - startTime < timePerTurn) {
+					best = bestSoFar;
+					alpha = alphaSoFar;
+					System.out.println("Score: " + alphaSoFar + " New best move: " + bestSoFar);
+				}
+			}
+		}
+
+		System.out.println( "Duration: " + (System.currentTimeMillis() - startTime) + " Score: " + alpha + " Going with move: " + best);
+		if (best == null) best = moveGreedy();
+		move(best);
+		return best;
+	}
+
+	private static int moveAlphabetaRecursive(int depth, int alpha, int beta) {
+		if (depth == 0 || winner() != '?') {
+			if (winner() != '=' && winner() != '?') {
+				return -500000 - depth;
+			}
+			return eval();
+		}
+
+		int score = -500000000;
+		Vector<String> moves = movesShuffled();
+
+		for (String move : moves) {
+			move(move);
+			score = Math.max(score, -moveAlphabetaRecursive(depth - 1, -beta, -alpha));
+			undo();
+
+			alpha = Math.max(alpha, score);
+			if (alpha >= beta) {
+				break;
+			}
+		}
+
+		return score;
 	}
 
 	public static void undo() {
