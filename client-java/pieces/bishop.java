@@ -9,12 +9,12 @@ import java.util.Vector;
  */
 public class Bishop extends Piece {
 	public Bishop(int x, int y, boolean white) {
-		super(x, y, white ? 'B' : 'b');
+		super(white ? 'B' : 'b');
 		value = 3;
 	}
 
 	@Override
-	public Vector<Move> possibleMoves() {
+	public Vector<Move> possibleMoves(int x, int y) {
 		Vector moves = new Vector<>();
 		boolean ur = true;
 		boolean ul = true;

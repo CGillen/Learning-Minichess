@@ -7,12 +7,12 @@ import java.util.Vector;
  */
 public class Empty extends Piece {
 	public Empty(int x, int y) {
-		super(x, y, '.');
+		super('.');
 		value = 0;
 	}
 
 	@Override
-	public Vector<Move> possibleMoves() {
+	public Vector<Move> possibleMoves(int x, int y) {
 		return null;
 	}
 }

@@ -10,12 +10,12 @@ import java.util.Vector;
 public class Pawn extends Piece {
 
 	public Pawn(int x, int y, boolean white) {
-		super(x, y, white ? 'P' : 'p');
+		super(white ? 'P' : 'p');
 		value = 1;
 	}
 
 	@Override
-	public Vector<Move> possibleMoves() {
+	public Vector<Move> possibleMoves(int x, int y) {
 		Vector moves = new Vector<>();
 		int yDirection = Character.isUpperCase(type) ? 1 : -1;
 
