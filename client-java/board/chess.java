@@ -11,6 +11,8 @@ public class chess {
 	private static final Map<Character, Integer> piecePoints = new HashMap<>();
 	private static Stack<Move> prevMoves = new Stack<>();
 
+	private static int timePerTurn = 12500;
+
 	public static void reset() {
 		// reset the state of the game / your internal variables - note that this function is highly dependent on your implementation
 		turn = 1;
@@ -165,7 +167,7 @@ public class chess {
 
 		return player.equals("W") ? wSum - bSum : bSum - wSum;
 	}
-	
+
 	public static Vector<String> moves() {
 		// with reference to the state of the game and return the possible moves - one example is given below - note that a pieces.Move has exactly 6 characters
 
@@ -222,7 +224,7 @@ public class chess {
 
 		return moves;
 	}
-	
+
 	public static Vector<String> movesShuffled() {
 		// with reference to the state of the game, determine the possible moves and shuffle them before returning them - note that you can call the board.chess.moves() function in here
 
@@ -231,7 +233,7 @@ public class chess {
 
 		return toReturn;
 	}
-	
+
 	public static Vector<String> movesEvaluated() {
 		// with reference to the state of the game, determine the possible moves and sort them in order of an increasing evaluation score before returning them - note that you can call the board.chess.moves() function in here
 
@@ -291,7 +293,7 @@ public class chess {
 			prevMoves.push(givenMove);
 		}
 	}
-	
+
 	public static String moveRandom() {
 		// perform a random pieces.Move and return it - one example output is given below - note that you can call the board.chess.movesShuffled() function as well as the board.chess.pieces.Move() function in here
 
@@ -300,7 +302,7 @@ public class chess {
 
 		return move;
 	}
-	
+
 	public static String moveGreedy() {
 		// perform a greedy pieces.Move and return it - one example output is given below - note that you can call the board.chess.movesEvaluated() function as well as the board.chess.pieces.Move() function in here
 
@@ -309,19 +311,87 @@ public class chess {
 
 		return move;
 	}
-	
+
 	public static String moveNegamax(int intDepth, int intDuration) {
 		// perform a negamax pieces.Move and return it - one example output is given below - note that you can call the the other functions in here
-		
-		return "a2-a3\n";
+
+		long startTime = System.currentTimeMillis();
+		String best = null;
+		String bestSoFar = null;
+		int score = -500000000;
+		int scoreSoFar = -500000000;
+		int temp = 0;
+		Vector<String> moves = movesShuffled();
+
+		if (intDepth >= 0) {
+			for (String move : moves) {
+				move(move);
+				temp = -moveNegamaxRecursive(intDepth - 1);
+				undo();
+
+				if (temp > score) {
+					best = move;
+					score = temp;
+					System.out.println("Score: " + score + " New best move: " + best);
+				}
+			}
+		} else {
+			for (int i=4; i<15 && System.currentTimeMillis() - startTime < timePerTurn/3; ++i) {
+				System.out.println("Depth: " + i);
+				for (String move : moves) {
+					if (System.currentTimeMillis() - startTime > timePerTurn) {
+						System.out.println("Out of time. Canceling.");
+						break;
+					}
+					move(move);
+					temp = -moveNegamaxRecursive(i - 1);
+					undo();
+
+					if (temp > score) {
+						bestSoFar = move;
+						scoreSoFar = temp;
+					}
+				}
+				if (scoreSoFar > score && System.currentTimeMillis() - startTime < timePerTurn) {
+					best = bestSoFar;
+					score = scoreSoFar;
+					System.out.println("Score: " + scoreSoFar + " New best move: " + bestSoFar);
+				}
+			}
+		}
+
+		System.out.println( "Duration: " + (System.currentTimeMillis() - startTime) + " Score: " + score + " Going with move: " + best);
+		if (best == null) best = moveGreedy();
+		move(best);
+		return best;
 	}
-	
+
+	private static int moveNegamaxRecursive(int depth) {
+		if (depth == 0 || winner() != '?') {
+			if (winner() != '=' && winner() != '?') {
+				return -500000 - depth;
+			}
+			return eval();
+		}
+
+		int score = -500000000;
+		Vector<String> moves = movesShuffled();
+
+		for (String move : moves) {
+			move(move);
+			score = Math.max(score, -moveNegamaxRecursive(depth - 1));
+			undo();
+		}
+
+		return score;
+	}
+
 	public static String moveAlphabeta(int intDepth, int intDuration) {
 		// perform a alphabeta pieces.Move and return it - one example output is given below - note that you can call the the other functions in here
-		
+
 		return "a2-a3\n";
 	}
-	
+
 	public static void undo() {
 		// undo the last pieces.Move and update the state of the game / your internal variables accordingly - note that you need to maintain an internal variable that keeps track of the previous history for this
 		Move toUndo = prevMoves.pop();
