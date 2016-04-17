@@ -9,12 +9,12 @@ import java.util.Vector;
  */
 public class King extends Piece {
 	public King(int x, int y, boolean white) {
-		super(x, y, white ? 'K' : 'k');
+		super(white ? 'K' : 'k');
 		value = 1000;
 	}
 
 	@Override
-	public Vector<Move> possibleMoves() {
+	public Vector<Move> possibleMoves(int x, int y) {
 		Vector moves = new Vector<>();
 
 		// Cardinal directions

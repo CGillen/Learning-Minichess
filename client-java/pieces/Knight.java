@@ -9,12 +9,12 @@ import java.util.Vector;
  */
 public class Knight extends Piece {
 	public Knight(int x, int y, boolean white) {
-		super(x, y, white ? 'N' : 'n');
+		super(white ? 'N' : 'n');
 		value = 3;
 	}
 
 	@Override
-	public Vector<Move> possibleMoves() {
+	public Vector<Move> possibleMoves(int x, int y) {
 		Vector moves = new Vector<>();
 
 		if (x+1 <= 4 && y+2 <= 5 && !chess.isOwn(x+1, y+2)) moves.add(new Move(x, y, 1, 2));

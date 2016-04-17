@@ -175,12 +175,12 @@ public class chess {
 		for (int y=board.length-1; y>=0; --y) {
 			for (int x=0; x<board[0].length; ++x) {
 				if (player.equals("W") && Character.isUpperCase(board[y][x].getChar())) {
-					toConsider = board[y][x].possibleMoves();
+					toConsider = board[y][x].possibleMoves(x, y);
 					for (Move m : toConsider) {
 						strOut.add(m.toString());
 					}
 				} else if (player.equals("B") && Character.isLowerCase(board[y][x].getChar())) {
-					toConsider = board[y][x].possibleMoves();
+					toConsider = board[y][x].possibleMoves(x, y);
 					for (Move m : toConsider) {
 						strOut.add(m.toString());
 					}
@@ -201,7 +201,7 @@ public class chess {
 		for (int y=board.length-1; y>=0; --y) {
 			for (int x=0; x<board[0].length; ++x) {
 				if (player.equals("W") && Character.isUpperCase(board[y][x].getChar())) {
-					toConsider = board[y][x].possibleMoves();
+					toConsider = board[y][x].possibleMoves(x, y);
 					for (Move m : toConsider) {
 						move(m.toString());
 						score = eval();
@@ -209,7 +209,7 @@ public class chess {
 						moves.add(new ScoredMove(m, score));
 					}
 				} else if (player.equals("B") && Character.isLowerCase(board[y][x].getChar())) {
-					toConsider = board[y][x].possibleMoves();
+					toConsider = board[y][x].possibleMoves(x, y);
 					for (Move m : toConsider) {
 						move(m.toString());
 						score = eval();
@@ -238,6 +238,8 @@ public class chess {
 		Vector<ScoredMove> toSort = movesScored();
 		Vector<String> toReturn = new Vector<String>();
 
+		Collections.shuffle(toSort);
+
 		Collections.sort(toSort, new Comparator<ScoredMove>() {
 			@Override
 			public int compare(ScoredMove o1, ScoredMove o2) {
@@ -263,7 +265,7 @@ public class chess {
 		char piece = board[yStart][xStart].getChar();
 		if (isEnemy(piece)) return;
 
-		Vector<Move> moves = board[yStart][xStart].possibleMoves();
+		Vector<Move> moves = board[yStart][xStart].possibleMoves(xStart, yStart);
 		int xDiff = xEnd - xStart;
 		int yDiff = yEnd - yStart;
 		Move givenMove = new Move(xStart, yStart, xDiff, yDiff, board[yStart][xStart].getChar(), board[yEnd][xEnd].getChar(), player.equals("W"));
@@ -274,7 +276,6 @@ public class chess {
 		}
 
 		if (moveStrings.contains(givenMove.toString())) {
-			board[yStart][xStart].move(xDiff, yDiff);
 			board[yEnd][xEnd] = board[yStart][xStart];
 			board[yStart][xStart] = new Empty(xStart, yStart);
 			// Special case: Pawn promotion
@@ -293,14 +294,20 @@ public class chess {
 	
 	public static String moveRandom() {
 		// perform a random pieces.Move and return it - one example output is given below - note that you can call the board.chess.movesShuffled() function as well as the board.chess.pieces.Move() function in here
-		
-		return "a2-a3\n";
+
+		String move = movesShuffled().get(0);
+		move(move);
+
+		return move;
 	}
 	
 	public static String moveGreedy() {
 		// perform a greedy pieces.Move and return it - one example output is given below - note that you can call the board.chess.movesEvaluated() function as well as the board.chess.pieces.Move() function in here
-		
-		return "a2-a3\n";
+
+		String move = movesEvaluated().get(0);
+		move(move);
+
+		return move;
 	}
 	
 	public static String moveNegamax(int intDepth, int intDuration) {
@@ -329,7 +336,6 @@ public class chess {
 
 		// Reset board positions
 		board[yStart][xStart] = toUndo.original;
-		board[yStart][xStart].move(xDiff, yDiff);
 		board[yEnd][xEnd] = toUndo.capture;
 
 		// Reset turn tracking
