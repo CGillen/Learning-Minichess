@@ -321,7 +321,7 @@ public class chess {
 		int score = -500000000;
 		int scoreSoFar = -500000000;
 		int temp = 0;
-		Vector<String> moves = movesShuffled();
+		Vector<String> moves = movesEvaluated();
 
 		if (intDepth >= 0) {
 			for (String move : moves) {
@@ -356,6 +356,7 @@ public class chess {
 					best = bestSoFar;
 					score = scoreSoFar;
 					System.out.println("Score: " + scoreSoFar + " New best move: " + bestSoFar);
+					if (score == 500000) break;
 				}
 			}
 		}
@@ -396,7 +397,7 @@ public class chess {
 		int alpha = -500000000;
 		int alphaSoFar = -500000000;
 		int beta = 500000000;
-		Vector<String> moves = movesShuffled();
+		Vector<String> moves = movesEvaluated();
 
 		if (intDepth >= 0) {
 			for (String move : moves) {
@@ -414,7 +415,7 @@ public class chess {
 			for (int i=4; i<15 && System.currentTimeMillis() - startTime < timePerTurn/3; ++i) {
 				System.out.println("Depth: " + i);
 				for (String move : moves) {
-					if (System.currentTimeMillis() - startTime > timePerTurn) {
+					if (System.currentTimeMillis() - startTime > timePerTurn - 1000) {
 						System.out.println("Out of time. Canceling.");
 						break;
 					}
@@ -443,10 +444,11 @@ public class chess {
 
 	private static int moveAlphabetaRecursive(int depth, int alpha, int beta) {
 		if (depth == 0 || winner() != '?') {
-			if (winner() != '=' && winner() != '?') {
+			int eval = eval();
+			if (Math.abs(eval) > 1000) {
 				return -500000 - depth;
 			}
-			return eval();
+			return eval;
 		}
 
 		int score = -500000000;
