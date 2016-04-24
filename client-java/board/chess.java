@@ -431,34 +431,6 @@ public class chess {
 		return best;
 	}
 
-	/*
-	private static int moveAlphabetaRecursive(int depth, int alpha, int beta) {
-		if (depth == 0 || winner() != '?') {
-			int eval = eval();
-			if (Math.abs(eval) > 1000) {
-				return -500000 - depth;
-			}
-			return eval;
-		}
-
-		int score = -500000000;
-		Vector<String> moves = movesShuffled();
-
-		for (String move : moves) {
-			move(move);
-			score = Math.max(score, -moveAlphabetaRecursive(depth - 1, -beta, -alpha));
-			undo();
-
-			alpha = Math.max(alpha, score);
-			if (alpha >= beta) {
-				break;
-			}
-		}
-
-		return score;
-	}
-*/
-
 	public static void undo() {
 		// undo the last pieces.Move and update the state of the game / your internal variables accordingly - note that you need to maintain an internal variable that keeps track of the previous history for this
 		Move toUndo = prevMoves.pop();
