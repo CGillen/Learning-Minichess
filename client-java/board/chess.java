@@ -8,7 +8,6 @@ public class chess {
 	private static int turn;
 	private static String player;
 	private static Piece[][] board;
-	private static final Map<Character, Integer> piecePoints = new HashMap<>();
 	private static Stack<Move> prevMoves = new Stack<>();
 
 	private static int timePerTurn = 12500;
@@ -391,57 +390,48 @@ public class chess {
 		// perform a alphabeta pieces.Move and return it - one example output is given below - note that you can call the the other functions in here
 
 		long startTime = System.currentTimeMillis();
+		long turnTime = 0;
 		String best = null;
-		String bestSoFar = null;
-		int temp = 0;
-		int alpha = -500000000;
-		int alphaSoFar = -500000000;
-		int beta = 500000000;
-		Vector<String> moves = movesEvaluated();
 
-		if (intDepth >= 0) {
-			for (String move : moves) {
-				move(move);
-				temp = -moveAlphabetaRecursive(intDepth - 1, - beta, -alpha);
-				undo();
+		alphaBeta abRunnable = new alphaBeta(intDepth);
+		Thread abThread = new Thread(abRunnable);
+		abThread.start();
 
-				if (temp > alpha) {
-					best = move;
-					alpha = temp;
-					System.out.println("Score: " + alpha + " New best move: " + best);
-				}
-			}
+		if (turn < 10) {
+			turnTime = 8000;
+		} else if (turn < 25) {
+			turnTime = 15000;
 		} else {
-			for (int i=4; i<15 && System.currentTimeMillis() - startTime < timePerTurn/3; ++i) {
-				System.out.println("Depth: " + i);
-				for (String move : moves) {
-					if (System.currentTimeMillis() - startTime > timePerTurn - 1000) {
-						System.out.println("Out of time. Canceling.");
-						break;
-					}
-					move(move);
-					temp = -moveAlphabetaRecursive(i - 1, - beta, -alpha);
-					undo();
+			turnTime = 20000;
+		}
+		System.out.println("Running AlphaBeta for: " + turnTime + "ms.");
 
-					if (temp > alpha) {
-						bestSoFar = move;
-						alphaSoFar = temp;
-					}
-				}
-				if (alphaSoFar > alpha && System.currentTimeMillis() - startTime < timePerTurn) {
-					best = bestSoFar;
-					alpha = alphaSoFar;
-					System.out.println("Score: " + alphaSoFar + " New best move: " + bestSoFar);
-				}
+		while ( (intDepth >= 0 || System.currentTimeMillis() - startTime < turnTime)
+				&& abRunnable.running) {
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
+		abRunnable.running = false;
+		try {
+			abThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		best = abRunnable.best;
 
-		System.out.println( "Duration: " + (System.currentTimeMillis() - startTime) + " Score: " + alpha + " Going with move: " + best);
-		if (best == null) best = moveGreedy();
+		if (best == null) {
+			System.out.println("Something is wrong, we didn't find a best move!");
+			return moveGreedy();
+		}
+		System.out.println("Out of time, or execution finished. Time: " + (System.currentTimeMillis() - startTime) + ". Going with best so far: " + best);
 		move(best);
 		return best;
 	}
 
+	/*
 	private static int moveAlphabetaRecursive(int depth, int alpha, int beta) {
 		if (depth == 0 || winner() != '?') {
 			int eval = eval();
@@ -467,6 +457,7 @@ public class chess {
 
 		return score;
 	}
+*/
 
 	public static void undo() {
 		// undo the last pieces.Move and update the state of the game / your internal variables accordingly - note that you need to maintain an internal variable that keeps track of the previous history for this
