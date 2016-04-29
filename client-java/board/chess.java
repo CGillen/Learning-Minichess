@@ -85,10 +85,6 @@ public class chess {
 	
 	public static char winner() {
 		// determine the winner of the current state of the game and return '?' or '=' or 'W' or 'B' - note that we are returning a character and not a string
-		if (turn > 40) {
-			return '=';
-		}
-
 		int kings = 0;
 
 		for (int x=0; x < board.length; ++x) {
@@ -96,6 +92,10 @@ public class chess {
 				kings = (board[x][y].getChar() == 'K') ? kings + 1 : kings;
 				kings = (board[x][y].getChar() == 'k') ? kings - 1 : kings;
 			}
+		}
+
+		if (turn > 40 && kings == 0) {
+			return '=';
 		}
 
 		if (kings > 0) {
