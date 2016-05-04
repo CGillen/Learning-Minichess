@@ -8,9 +8,17 @@ import java.util.Vector;
  * Created by Corey on 4/6/2016.
  */
 public class Knight extends Piece {
+
 	public Knight(int x, int y, boolean white) {
 		super(white ? 'N' : 'n');
-		value = 3;
+		value = new int[][]{
+				{20, 20, 20, 20, 20, 20},
+				{20, 35, 40, 40, 35, 20},
+				{20, 40, 60, 60, 40, 20},
+				{20, 40, 60, 60, 40, 20},
+				{20, 35, 40, 40, 35, 20},
+				{20, 20, 20, 20, 20, 20},
+		};
 	}
 
 	@Override

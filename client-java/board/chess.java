@@ -9,20 +9,22 @@ public class chess {
 	private static String player;
 	private static Piece[][] board;
 	private static Stack<Move> prevMoves = new Stack<>();
+	private static int bScore, wScore;
 
-	private static int timePerTurn = 12500;
+	private static int timePerTurn = 7000;
 
 	public static void reset() {
 		// reset the state of the game / your internal variables - note that this function is highly dependent on your implementation
 		turn = 1;
 		player = "W";
+		bScore = wScore = 0;
 		board = new Piece[][]{
 				{new Rook(0, 0, true), new Knight(1, 0, true), new Bishop(2, 0, true), new Queen(3, 0, true), new King(4, 0, true)},
 				{new Pawn(0, 1, true), new Pawn(1, 1, true), new Pawn(2, 1, true), new Pawn(3, 1, true), new Pawn(4, 1, true)},
 				{new Empty(0, 2), new Empty(1, 2), new Empty(2, 2), new Empty(3, 2), new Empty(4, 2)},
 				{new Empty(0, 3), new Empty(1, 3), new Empty(2, 3), new Empty(3, 3), new Empty(4, 3)},
 				{new Pawn(0, 4, false), new Pawn(1, 4, false), new Pawn(2, 4, false), new Pawn(3, 4, false), new Pawn(4, 4, false)},
-				{new King(0, 5, false), new Queen(1, 5, false), new Bishop(2, 5, false), new Knight(3, 5, false), new Rook(4, 5, false)},
+				{new King(0, 5, false), new Queen(1, 5, false), new Bishop(2, 5, false), new Knight(3, 5, false), new Rook(4, 5, false)}
 		};
 	}
 	
@@ -80,14 +82,12 @@ public class chess {
 				}
 			}
 		}
+
+		evalRaw();
 	}
 	
 	public static char winner() {
 		// determine the winner of the current state of the game and return '?' or '=' or 'W' or 'B' - note that we are returning a character and not a string
-		if (turn > 40) {
-			return '=';
-		}
-
 		int kings = 0;
 
 		for (int x=0; x < board.length; ++x) {
@@ -95,6 +95,10 @@ public class chess {
 				kings = (board[x][y].getChar() == 'K') ? kings + 1 : kings;
 				kings = (board[x][y].getChar() == 'k') ? kings - 1 : kings;
 			}
+		}
+
+		if (turn > 40 && kings == 0) {
+			return '=';
 		}
 
 		if (kings > 0) {
@@ -148,23 +152,33 @@ public class chess {
 
 		return charPiece == '.';
 	}
-	
+
 	public static int eval() {
+	//	return evalRaw();
+		return player.equals("W") ? wScore - bScore : bScore - wScore;
+	}
+
+	public static int evalRaw() {
 		// with reference to the state of the game, return the the evaluation score of the side on pieces.Move - note that positive means an advantage while negative means a disadvantage
 		int bSum = 0;
 		int wSum = 0;
+		int score = 0;
 
 		for (int y=board.length-1; y>=0; --y) {
 			for (int x=0; x<board[0].length; ++x) {
 				if (Character.isUpperCase(board[y][x].getChar())) {
-					wSum += board[y][x].getValue();
+					wSum += board[y][x].getValue(x, y, true);
 				} else {
-					bSum += board[y][x].getValue();
+					bSum += board[y][x].getValue(x, y, false);
 				}
 			}
 		}
 
-		return player.equals("W") ? wSum - bSum : bSum - wSum;
+		score = player.equals("W") ? wSum - bSum : bSum - wSum;
+		bScore = bSum;
+		wScore = wSum;
+
+		return score;
 	}
 
 	public static Vector<String> moves() {
@@ -263,8 +277,9 @@ public class chess {
 		int yStart = Character.getNumericValue(charIn.charAt(1)) - 1;
 		int yEnd = Character.getNumericValue(charIn.charAt(4)) - 1;
 
-		char piece = board[yStart][xStart].getChar();
-		if (isEnemy(piece)) return;
+		char pieceChar = board[yStart][xStart].getChar();
+		Piece piece = board[yStart][xStart];
+		if (isEnemy(pieceChar)) return;
 
 		Vector<Move> moves = board[yStart][xStart].possibleMoves(xStart, yStart);
 		int xDiff = xEnd - xStart;
@@ -280,7 +295,7 @@ public class chess {
 			board[yEnd][xEnd] = board[yStart][xStart];
 			board[yStart][xStart] = new Empty(xStart, yStart);
 			// Special case: Pawn promotion
-			if (Character.toLowerCase(piece) == 'p') {
+			if (Character.toLowerCase(pieceChar) == 'p') {
 				if (yEnd == 5 && player.equals("W")) {
 					board[yEnd][xEnd] = new Queen(xEnd, yEnd, true);
 				} else if (yEnd == 0 && player.equals("B")) {
@@ -290,6 +305,14 @@ public class chess {
 			turn += player.equals("W") ? 0 : 1;
 			player = (player.equals("W")) ? "B" : "W";
 			prevMoves.push(givenMove);
+
+			if (Character.isUpperCase(pieceChar)) {
+				wScore += (piece.getValue(xEnd, yEnd, true) - piece.getValue(xStart, yStart, true));
+				bScore -= givenMove.capture.getValue(xEnd, yEnd, false);
+			} else {
+				bScore += (piece.getValue(xEnd, yEnd, false) - piece.getValue(xStart, yStart, false));
+				wScore -= givenMove.capture.getValue(xEnd, yEnd, true);
+			}
 		}
 	}
 
@@ -440,9 +463,6 @@ public class chess {
 		int yStart = Character.getNumericValue(charIn.charAt(1)) - 1;
 		int yEnd = Character.getNumericValue(charIn.charAt(4)) - 1;
 
-		int xDiff = xStart - xEnd;
-		int yDiff = yStart - yEnd;
-
 		// Reset board positions
 		board[yStart][xStart] = toUndo.original;
 		board[yEnd][xEnd] = toUndo.capture;
@@ -450,5 +470,14 @@ public class chess {
 		// Reset turn tracking
 		turn -= player.equals("W") ? 1 : 0;
 		player = (player.equals("W")) ? "B" : "W";
+
+		// Reset bScore and wScore
+		if (Character.isUpperCase(toUndo.original.getChar())) {
+			wScore -= (toUndo.original.getValue(xEnd, yEnd, true) - toUndo.original.getValue(xStart, yStart, true));
+			bScore += toUndo.capture.getValue(xEnd, yEnd, false);
+		} else {
+			bScore -= (toUndo.original.getValue(xEnd, yEnd, false) - toUndo.original.getValue(xStart, yStart, false));
+			wScore += toUndo.capture.getValue(xEnd, yEnd, true);
+		}
 	}
 }

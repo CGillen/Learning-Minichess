@@ -8,9 +8,17 @@ import java.util.Vector;
  * Created by Corey on 4/6/2016.
  */
 public class Rook extends Piece {
+
 	public Rook(int x, int y, boolean white) {
 		super(white ? 'R' : 'r');
-		value = 5;
+		value = new int[][]{
+				{20, 20, 20, 20, 20, 20},
+				{20, 30, 30, 30, 30, 30},
+				{20, 30, 40, 40, 30, 20},
+				{20, 30, 40, 40, 30, 20},
+				{30, 30, 30, 30, 30, 30},
+				{30, 30, 30, 30, 30, 30},
+		};
 	}
 
 	@Override

@@ -8,9 +8,17 @@ import java.util.Vector;
  * Created by Corey on 4/6/2016.
  */
 public class King extends Piece {
+
 	public King(int x, int y, boolean white) {
 		super(white ? 'K' : 'k');
-		value = 1000;
+		value = new int[][]{
+				{-50, -50, -50, -50, -50},
+				{-35, -35, -35, -35, -35},
+				{-10, -10, -10, -10, -10},
+				{0, 0, 0, 0, 0, 0},
+				{70, 100, 100, 100, 200, 200},
+				{100, 200, 300, 450, 500, 500},
+		};
 	}
 
 	@Override
