@@ -7,7 +7,7 @@ import java.util.Vector;
  */
 public abstract class Piece {
 	char type;
-	float value;
+	int[][] value;
 
 	public Piece(char type) {
 		this.type = type;
@@ -19,7 +19,10 @@ public abstract class Piece {
 		return type;
 	}
 
-	public float getValue() {
-		return value;
+	public int getValue(int x, int y, boolean white) {
+		if (white) {
+			return value[(5*(y+1)) % 6][x];
+		}
+		return value[y][(4*(x+1)) % 5];
 	}
 }

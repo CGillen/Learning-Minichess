@@ -8,9 +8,17 @@ import java.util.Vector;
  * Created by Corey on 4/6/2016.
  */
 public class Queen extends Piece {
+
 	public Queen(int x, int y, boolean white) {
 		super(white ? 'Q' : 'q');
-		value = 9;
+		value = new int[][]{
+				{60, 50, 40, 40, 50, 60},
+				{50, 60, 50, 50, 60, 50},
+				{40, 50, 60, 60, 50, 40},
+				{40, 50, 60, 60, 50, 40},
+				{50, 60, 50, 50, 60, 50},
+				{60, 50, 40, 40, 50, 60},
+		};
 	}
 
 	@Override

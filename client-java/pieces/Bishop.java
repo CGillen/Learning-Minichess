@@ -8,9 +8,17 @@ import java.util.Vector;
  * Created by Corey on 4/6/2016.
  */
 public class Bishop extends Piece {
+
 	public Bishop(int x, int y, boolean white) {
 		super(white ? 'B' : 'b');
-		value = 3;
+		value = new int[][]{
+				{40, 30, 20, 20, 30, 40},
+				{30, 40, 30, 30, 40, 30},
+				{20, 30, 40, 40, 30, 20},
+				{20, 30, 40, 40, 30, 20},
+				{30, 40, 30, 30, 40, 30},
+				{40, 30, 20, 20, 30, 40},
+		};
 	}
 
 	@Override
