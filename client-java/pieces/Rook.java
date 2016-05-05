@@ -11,7 +11,7 @@ public class Rook extends Piece {
 
 	public Rook(int x, int y, boolean white) {
 		super(white ? 'R' : 'r');
-		value = new int[][]{
+		value = new double[][]{
 				{20, 20, 20, 20, 20, 20},
 				{20, 30, 30, 30, 30, 30},
 				{20, 30, 40, 40, 30, 20},

@@ -11,7 +11,7 @@ public class Bishop extends Piece {
 
 	public Bishop(int x, int y, boolean white) {
 		super(white ? 'B' : 'b');
-		value = new int[][]{
+		value = new double[][]{
 				{40, 30, 20, 20, 30, 40},
 				{30, 40, 30, 30, 40, 30},
 				{20, 30, 40, 40, 30, 20},

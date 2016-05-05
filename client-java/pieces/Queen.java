@@ -11,7 +11,7 @@ public class Queen extends Piece {
 
 	public Queen(int x, int y, boolean white) {
 		super(white ? 'Q' : 'q');
-		value = new int[][]{
+		value = new double[][]{
 				{60, 50, 40, 40, 50, 60},
 				{50, 60, 50, 50, 60, 50},
 				{40, 50, 60, 60, 50, 40},

@@ -8,7 +8,7 @@ import java.util.Vector;
 public class Empty extends Piece {
 	public Empty(int x, int y) {
 		super('.');
-		value = new int[][]{
+		value = new double[][]{
 				{0, 0, 0, 0, 0, 0},
 				{0, 0, 0, 0, 0, 0},
 				{0, 0, 0, 0, 0, 0},

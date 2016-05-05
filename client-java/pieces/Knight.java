@@ -11,7 +11,7 @@ public class Knight extends Piece {
 
 	public Knight(int x, int y, boolean white) {
 		super(white ? 'N' : 'n');
-		value = new int[][]{
+		value = new double[][]{
 				{20, 20, 20, 20, 20, 20},
 				{20, 35, 40, 40, 35, 20},
 				{20, 40, 60, 60, 40, 20},

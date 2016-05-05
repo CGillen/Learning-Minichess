@@ -9,9 +9,7 @@ public class chess {
 	private static String player;
 	private static Piece[][] board;
 	private static Stack<Move> prevMoves = new Stack<>();
-	private static int bScore, wScore;
-
-	private static int timePerTurn = 7000;
+	private static double bScore, wScore;
 
 	public static void reset() {
 		// reset the state of the game / your internal variables - note that this function is highly dependent on your implementation
@@ -155,7 +153,7 @@ public class chess {
 
 	public static int eval() {
 	//	return evalRaw();
-		return player.equals("W") ? wScore - bScore : bScore - wScore;
+		return player.equals("W") ? (int)(wScore - bScore) : (int)(bScore - wScore);
 	}
 
 	public static int evalRaw() {
@@ -258,7 +256,7 @@ public class chess {
 		Collections.sort(toSort, new Comparator<ScoredMove>() {
 			@Override
 			public int compare(ScoredMove o1, ScoredMove o2) {
-				return o1.score - o2.score;
+				return (int)(o1.score - o2.score);
 			}
 		});
 
@@ -307,11 +305,24 @@ public class chess {
 			prevMoves.push(givenMove);
 
 			if (Character.isUpperCase(pieceChar)) {
-				wScore += (piece.getValue(xEnd, yEnd, true) - piece.getValue(xStart, yStart, true));
-				bScore -= givenMove.capture.getValue(xEnd, yEnd, false);
+				if (!(piece instanceof King)) {
+					wScore += (piece.getValue(xEnd, yEnd, true) - piece.getValue(xStart, yStart, true));
+				}
+				if (givenMove.capture instanceof King) {
+					bScore = Double.NEGATIVE_INFINITY;
+				} else {
+					bScore -= givenMove.capture.getValue(xEnd, yEnd, false);
+				}
+
 			} else {
-				bScore += (piece.getValue(xEnd, yEnd, false) - piece.getValue(xStart, yStart, false));
-				wScore -= givenMove.capture.getValue(xEnd, yEnd, true);
+				if (!(piece instanceof King)) {
+					bScore += (piece.getValue(xEnd, yEnd, false) - piece.getValue(xStart, yStart, false));
+				}
+				if (givenMove.capture instanceof King) {
+					wScore = Double.NEGATIVE_INFINITY;
+				} else {
+					wScore -= givenMove.capture.getValue(xEnd, yEnd, true);
+				}
 			}
 		}
 	}
@@ -338,12 +349,21 @@ public class chess {
 		// perform a negamax pieces.Move and return it - one example output is given below - note that you can call the the other functions in here
 
 		long startTime = System.currentTimeMillis();
+		long turnTime;
 		String best = null;
 		String bestSoFar = null;
 		int score = -500000000;
 		int scoreSoFar = -500000000;
 		int temp = 0;
 		Vector<String> moves = movesEvaluated();
+
+		if (turn < 10) {
+			turnTime = 5000;
+		} else if (turn < 25) {
+			turnTime = 7000;
+		} else {
+			turnTime = 8500;
+		}
 
 		if (intDepth >= 0) {
 			for (String move : moves) {
@@ -358,10 +378,10 @@ public class chess {
 				}
 			}
 		} else {
-			for (int i=4; i<15 && System.currentTimeMillis() - startTime < timePerTurn/3; ++i) {
+			for (int i=4; i<15 && System.currentTimeMillis() - startTime < turnTime/3; ++i) {
 				System.out.println("Depth: " + i);
 				for (String move : moves) {
-					if (System.currentTimeMillis() - startTime > timePerTurn) {
+					if (System.currentTimeMillis() - startTime > turnTime) {
 						System.out.println("Out of time. Canceling.");
 						break;
 					}
@@ -374,7 +394,7 @@ public class chess {
 						scoreSoFar = temp;
 					}
 				}
-				if (scoreSoFar > score && System.currentTimeMillis() - startTime < timePerTurn) {
+				if (scoreSoFar > score && System.currentTimeMillis() - startTime < turnTime) {
 					best = bestSoFar;
 					score = scoreSoFar;
 					System.out.println("Score: " + scoreSoFar + " New best move: " + bestSoFar);
@@ -421,11 +441,11 @@ public class chess {
 		abThread.start();
 
 		if (turn < 10) {
-			turnTime = 8000;
+			turnTime = 5000;
 		} else if (turn < 25) {
-			turnTime = 15000;
+			turnTime = 7000;
 		} else {
-			turnTime = 20000;
+			turnTime = 8500;
 		}
 		System.out.println("Running AlphaBeta for: " + turnTime + "ms.");
 
@@ -443,7 +463,9 @@ public class chess {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		best = abRunnable.best;
+		synchronized (abRunnable.best) {
+			best = abRunnable.best;
+		}
 
 		if (best == null) {
 			System.out.println("Something is wrong, we didn't find a best move!");
@@ -471,13 +493,21 @@ public class chess {
 		turn -= player.equals("W") ? 1 : 0;
 		player = (player.equals("W")) ? "B" : "W";
 
-		// Reset bScore and wScore
-		if (Character.isUpperCase(toUndo.original.getChar())) {
-			wScore -= (toUndo.original.getValue(xEnd, yEnd, true) - toUndo.original.getValue(xStart, yStart, true));
-			bScore += toUndo.capture.getValue(xEnd, yEnd, false);
+		if (toUndo.capture instanceof King) {
+			evalRaw();
 		} else {
-			bScore -= (toUndo.original.getValue(xEnd, yEnd, false) - toUndo.original.getValue(xStart, yStart, false));
-			wScore += toUndo.capture.getValue(xEnd, yEnd, true);
+			// Reset bScore and wScore
+			if (Character.isUpperCase(toUndo.original.getChar())) {
+				if (!(toUndo.original instanceof King)) {
+					wScore -= (toUndo.original.getValue(xEnd, yEnd, true) - toUndo.original.getValue(xStart, yStart, true));
+				}
+				bScore += toUndo.capture.getValue(xEnd, yEnd, false);
+			} else {
+				if (!(toUndo.original instanceof King)) {
+					bScore -= (toUndo.original.getValue(xEnd, yEnd, false) - toUndo.original.getValue(xStart, yStart, false));
+				}
+				wScore += toUndo.capture.getValue(xEnd, yEnd, true);
+			}
 		}
 	}
 }

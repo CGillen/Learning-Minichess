@@ -11,7 +11,7 @@ public class Pawn extends Piece {
 
 	public Pawn(int x, int y, boolean white) {
 		super(white ? 'P' : 'p');
-		value = new int[][]{
+		value = new double[][]{
 				{50, 50, 50, 50, 50, 50},
 				{30, 30, 30, 30, 30, 30},
 				{20, 20, 20, 20, 20, 20},
