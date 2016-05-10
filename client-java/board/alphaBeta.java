@@ -59,9 +59,9 @@ public class alphaBeta implements Runnable {
 				if (alphaSoFar > alpha) {
 					synchronized (best) {
 						best = bestSoFar;
+						alpha = alphaSoFar;
+						System.out.println("Score: " + alphaSoFar + " New best move: " + bestSoFar);
 					}
-					alpha = alphaSoFar;
-					System.out.println("Score: " + alphaSoFar + " New best move: " + bestSoFar);
 				}
 			}
 		}

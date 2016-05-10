@@ -153,30 +153,44 @@ public class chess {
 
 	public static int eval() {
 	//	return evalRaw();
-		return player.equals("W") ? (int)(wScore - bScore) : (int)(bScore - wScore);
+		int score =  player.equals("W") ? (int)(wScore - bScore) : (int)(bScore - wScore);
+		return score;
 	}
 
 	public static int evalRaw() {
 		// with reference to the state of the game, return the the evaluation score of the side on pieces.Move - note that positive means an advantage while negative means a disadvantage
 		int bSum = 0;
 		int wSum = 0;
-		int score = 0;
+		boolean bKing = false, wKing = false;
 
 		for (int y=board.length-1; y>=0; --y) {
 			for (int x=0; x<board[0].length; ++x) {
-				if (Character.isUpperCase(board[y][x].getChar())) {
-					wSum += board[y][x].getValue(x, y, true);
+				if (!(board[y][x] instanceof King)) {
+					if (Character.isUpperCase(board[y][x].getChar())) {
+						wSum += board[y][x].getValue(x, y, true);
+					} else {
+						bSum += board[y][x].getValue(x, y, false);
+					}
 				} else {
-					bSum += board[y][x].getValue(x, y, false);
+					if (Character.isUpperCase(board[y][x].getChar())) {
+						wKing = true;
+					} else {
+						bKing = true;
+					}
 				}
 			}
 		}
 
-		score = player.equals("W") ? wSum - bSum : bSum - wSum;
 		bScore = bSum;
 		wScore = wSum;
 
-		return score;
+		if (wKing && !bKing) {
+			bScore = Double.NEGATIVE_INFINITY;
+		} else if (!wKing && bKing) {
+			wScore = Double.NEGATIVE_INFINITY;
+		}
+
+		return player.equals("W") ? (int)(wScore - bScore) : (int)(bScore - wScore);
 	}
 
 	public static Vector<String> moves() {
@@ -304,24 +318,29 @@ public class chess {
 			player = (player.equals("W")) ? "B" : "W";
 			prevMoves.push(givenMove);
 
+			Piece pieceEnd = board[yEnd][xEnd];
+			double scorePre = piece.getValue(xStart, yStart, Character.isUpperCase(piece.getChar()));
+			double scorePost = pieceEnd.getValue(xEnd, yEnd, Character.isUpperCase(pieceEnd.getChar()));
+			double scoreCap = givenMove.capture.getValue(xEnd, yEnd, Character.isUpperCase(givenMove.capture.getChar()));
+
 			if (Character.isUpperCase(pieceChar)) {
 				if (!(piece instanceof King)) {
-					wScore += (piece.getValue(xEnd, yEnd, true) - piece.getValue(xStart, yStart, true));
+					wScore += scorePost - scorePre;
 				}
 				if (givenMove.capture instanceof King) {
 					bScore = Double.NEGATIVE_INFINITY;
 				} else {
-					bScore -= givenMove.capture.getValue(xEnd, yEnd, false);
+					bScore -= scoreCap;
 				}
 
 			} else {
 				if (!(piece instanceof King)) {
-					bScore += (piece.getValue(xEnd, yEnd, false) - piece.getValue(xStart, yStart, false));
+					bScore += scorePost - scorePre;
 				}
 				if (givenMove.capture instanceof King) {
 					wScore = Double.NEGATIVE_INFINITY;
 				} else {
-					wScore -= givenMove.capture.getValue(xEnd, yEnd, true);
+					wScore -= scoreCap;
 				}
 			}
 		}
@@ -352,9 +371,9 @@ public class chess {
 		long turnTime;
 		String best = null;
 		String bestSoFar = null;
-		int score = -500000000;
-		int scoreSoFar = -500000000;
-		int temp = 0;
+		double score = Double.NEGATIVE_INFINITY;
+		double scoreSoFar = Double.NEGATIVE_INFINITY;
+		double temp = 0;
 		Vector<String> moves = movesEvaluated();
 
 		if (turn < 10) {
@@ -409,15 +428,16 @@ public class chess {
 		return best;
 	}
 
-	private static int moveNegamaxRecursive(int depth) {
+	private static double moveNegamaxRecursive(int depth) {
 		if (depth == 0 || winner() != '?') {
-			if (winner() != '=' && winner() != '?') {
-				return -500000 - depth;
+			double eval = eval();
+			if (Double.isInfinite(eval)) {
+				return Double.NEGATIVE_INFINITY;
 			}
-			return eval();
+			return eval;
 		}
 
-		int score = -500000000;
+		double score = Double.NEGATIVE_INFINITY;
 		Vector<String> moves = movesShuffled();
 
 		for (String move : moves) {
@@ -471,8 +491,11 @@ public class chess {
 			System.out.println("Something is wrong, we didn't find a best move!");
 			return moveGreedy();
 		}
+
 		System.out.println("Out of time, or execution finished. Time: " + (System.currentTimeMillis() - startTime) + ". Going with best so far: " + best);
+		System.out.println(boardGet());
 		move(best);
+		System.out.println(boardGet());
 		return best;
 	}
 
@@ -484,6 +507,7 @@ public class chess {
 		int xEnd = charIn.charAt(3) - 'a';
 		int yStart = Character.getNumericValue(charIn.charAt(1)) - 1;
 		int yEnd = Character.getNumericValue(charIn.charAt(4)) - 1;
+		Piece pieceEnd = board[yEnd][xEnd];
 
 		// Reset board positions
 		board[yStart][xStart] = toUndo.original;
@@ -493,20 +517,24 @@ public class chess {
 		turn -= player.equals("W") ? 1 : 0;
 		player = (player.equals("W")) ? "B" : "W";
 
+		double scorePre = toUndo.original.getValue(xStart, yStart, Character.isUpperCase(toUndo.original.getChar()));
+		double scorePost = pieceEnd.getValue(xEnd, yEnd, Character.isUpperCase(pieceEnd.getChar()));
+		double scoreCap = toUndo.capture.getValue(xEnd, yEnd, Character.isUpperCase(toUndo.capture.getChar()));
+
 		if (toUndo.capture instanceof King) {
 			evalRaw();
 		} else {
 			// Reset bScore and wScore
 			if (Character.isUpperCase(toUndo.original.getChar())) {
 				if (!(toUndo.original instanceof King)) {
-					wScore -= (toUndo.original.getValue(xEnd, yEnd, true) - toUndo.original.getValue(xStart, yStart, true));
+					wScore -= scorePost - scorePre;
 				}
-				bScore += toUndo.capture.getValue(xEnd, yEnd, false);
+				bScore += scoreCap;
 			} else {
 				if (!(toUndo.original instanceof King)) {
-					bScore -= (toUndo.original.getValue(xEnd, yEnd, false) - toUndo.original.getValue(xStart, yStart, false));
+					bScore -= scorePost - scorePre;
 				}
-				wScore += toUndo.capture.getValue(xEnd, yEnd, true);
+				wScore += scoreCap;
 			}
 		}
 	}
