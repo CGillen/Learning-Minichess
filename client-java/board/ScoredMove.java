@@ -7,9 +7,9 @@ import pieces.Move;
  */
 public class ScoredMove {
 	public Move move;
-	public int score;
+	public double score;
 
-	ScoredMove(Move move, int score) {
+	ScoredMove(Move move, double score) {
 		this.move = move;
 		this.score = score;
 	}
