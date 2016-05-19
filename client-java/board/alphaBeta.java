@@ -45,11 +45,16 @@ public class alphaBeta implements Runnable {
 			for (int i=4; i<15 && running; ++i) {
 				System.out.println("Depth: " + i);
 				for (String move : moves) {
-					if (!running) return;
+					//if (!running) return;
 
 					move(move);
 					temp = -moveAlphabetaRecursive(i - 1, - beta, -alpha);
 					undo();
+
+					// If ran out of time quit out before updating our best move
+					if (Double.isNaN(temp)) {
+						return;
+					}
 
 					if (temp > alpha) {
 						bestSoFar = move;
@@ -71,7 +76,7 @@ public class alphaBeta implements Runnable {
 	}
 
 	private double moveAlphabetaRecursive(int depth, double alpha, double beta) {
-		if (!running) return -1;
+		if (!running) return Double.NaN;
 		if (depth == 0 || winner() != '?') {
 			double eval = eval();
 			if (Double.isInfinite(eval)) {
@@ -87,6 +92,11 @@ public class alphaBeta implements Runnable {
 			move(move);
 			score = Math.max(score, -moveAlphabetaRecursive(depth - 1, -beta, -alpha));
 			undo();
+
+			// If we ran out of time unroll the stack
+			if (Double.isNaN(score)) {
+				return Double.NaN;
+			}
 
 			alpha = Math.max(alpha, score);
 			if (alpha >= beta) {
