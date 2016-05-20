@@ -7,8 +7,8 @@ import java.util.Vector;
  * Created by Corey on 4/6/2016.
  */
 public abstract class Piece {
-	private char type;
-	private static double[][] value;
+	char type;
+	static double[][] value;
 	private static BitSet[][] zobrist;
 
 	public Piece(char type) {
