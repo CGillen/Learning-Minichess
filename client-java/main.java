@@ -53,6 +53,7 @@ public class main {
 		}
 		*/
 
+		/*
 		{
 			int bWins = 0;
 			int sumABCalls = 0;
@@ -74,6 +75,7 @@ public class main {
 			System.out.println("Black wins: " + bWins);
 			System.out.println("10 games abCalls: " + sumABCalls);
 		}
+		*/
 
 		{
 			zeromq.start();
