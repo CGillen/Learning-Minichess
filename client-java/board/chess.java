@@ -91,22 +91,14 @@ public class chess {
 	
 	public static char winner() {
 		// determine the winner of the current state of the game and return '?' or '=' or 'W' or 'B' - note that we are returning a character and not a string
-		int kings = 0;
 
-		for (int x=0; x < board.length; ++x) {
-			for (int y=0; y < board[0].length; ++y) {
-				kings = (board[x][y].getChar() == 'K') ? kings + 1 : kings;
-				kings = (board[x][y].getChar() == 'k') ? kings - 1 : kings;
-			}
-		}
-
-		if (turn > 40 && kings == 0) {
+		if (turn > 40 && !Double.isInfinite(wScore) && !Double.isInfinite(bScore)) {
 			return '=';
 		}
 
-		if (kings > 0) {
+		if (Double.isInfinite(wScore)) {
 			return 'W';
-		} else if (kings < 0) {
+		} else if (Double.isInfinite(bScore)) {
 			return 'B';
 		}
 
@@ -198,9 +190,11 @@ public class chess {
 		wScore = wSum;
 
 		if (wKing && !bKing) {
-			bScore = Double.NEGATIVE_INFINITY;
+			bScore = 0;
+			wScore = Double.POSITIVE_INFINITY;
 		} else if (!wKing && bKing) {
-			wScore = Double.NEGATIVE_INFINITY;
+			wScore = 0;
+			bScore = Double.POSITIVE_INFINITY;
 		}
 
 		return player.equals("W") ? (int)(wScore - bScore) : (int)(bScore - wScore);
