@@ -1,11 +1,22 @@
 package pieces;
 
+import java.util.BitSet;
 import java.util.Vector;
 
 /**
  * Created by Your name on 4/6/2016.
  */
 public class Empty extends Piece {
+
+	private static BitSet[][] zobrist = new BitSet[][]{
+		{BitSet.valueOf(new byte[]{-87,36,-127,-22,-23,115,126,7,125,-119,-91,40,-22,-125,-18,-71}), BitSet.valueOf(new byte[]{-114,-89,-60,58,94,112,-73,-112,-122,-23,-21,92,123,66,-15,90}), BitSet.valueOf(new byte[]{-35,-88,27,-37,-2,-17,53,61,-33,-29,-59,-37,-85,-13,-105,-127}), BitSet.valueOf(new byte[]{29,86,-111,100,-21,18,62,-93,32,-51,13,-60,103,-96,-67,-35}), BitSet.valueOf(new byte[]{-57,-95,-56,-96,-57,3,10,65,-8,85,83,34,10,-90,-101,82})},
+		{BitSet.valueOf(new byte[]{82,-44,-57,-60,109,67,-11,31,92,-106,-3,-34,-74,-106,115,-26}), BitSet.valueOf(new byte[]{-48,-46,95,-33,95,34,2,-12,121,43,115,-4,26,-38,17,-21}), BitSet.valueOf(new byte[]{48,121,-60,-128,-122,80,55,78,32,-36,-55,93,34,-70,-106,-126}), BitSet.valueOf(new byte[]{-82,58,96,-109,-86,36,-119,-52,43,-40,93,-92,-113,-63,-34,63}), BitSet.valueOf(new byte[]{123,69,104,84,-38,127,104,-11,-83,45,3,-2,-11,-73,-23,57})},
+		{BitSet.valueOf(new byte[]{-48,-6,-115,76,-127,-83,-110,-23,-90,-50,-14,20,70,-46,-5,85}), BitSet.valueOf(new byte[]{35,-90,-70,70,26,90,117,46,-17,8,-97,34,17,25,12,-33}), BitSet.valueOf(new byte[]{29,98,-103,-9,-24,56,-14,-70,5,-21,84,16,38,-76,-34,-35}), BitSet.valueOf(new byte[]{1,-62,79,63,-32,27,-105,-33,46,101,-122,23,-72,69,-112,-122}), BitSet.valueOf(new byte[]{14,-10,-44,-82,-30,44,-104,20,-100,57,-84,-5,26,-56,69,-77})},
+		{BitSet.valueOf(new byte[]{123,72,-122,-24,121,59,-88,43,106,-5,64,109,-49,10,92,-91}), BitSet.valueOf(new byte[]{-80,-9,8,-13,41,-93,78,-14,-101,111,-21,88,-44,-75,-111,107}), BitSet.valueOf(new byte[]{-63,110,24,121,121,92,108,56,-127,-54,-100,52,-116,52,-4,-87}), BitSet.valueOf(new byte[]{7,10,-26,92,-23,51,-62,84,-15,68,73,-85,-109,84,-76,-50}), BitSet.valueOf(new byte[]{33,97,-9,18,-19,-20,64,-13,-96,-14,-8,28,-61,-61,99,87})},
+		{BitSet.valueOf(new byte[]{117,-73,98,-3,116,-92,54,95,-25,-21,82,41,-9,-65,-106,-90}), BitSet.valueOf(new byte[]{-39,33,100,-44,-66,19,-126,111,37,35,110,28,-59,20,-2,4}), BitSet.valueOf(new byte[]{-70,-25,63,-29,-66,54,-106,-41,-105,-13,120,-36,-105,-125,-39,95}), BitSet.valueOf(new byte[]{94,121,99,34,58,87,68,-108,-2,-115,-95,123,114,-88,-23,6}), BitSet.valueOf(new byte[]{-105,-37,26,-10,69,-88,115,-114,36,-105,96,109,-58,58,51,-14})},
+		{BitSet.valueOf(new byte[]{-124,46,-104,53,92,7,-118,23,40,-2,-125,110,-92,74,1,-11}), BitSet.valueOf(new byte[]{56,-125,15,70,117,-101,73,-78,123,-119,-32,98,75,-63,72,-102}), BitSet.valueOf(new byte[]{-67,-41,86,59,18,-87,-85,12,-49,-22,96,69,-89,9,60,127}), BitSet.valueOf(new byte[]{28,87,46,-108,30,-83,111,13,-64,0,-91,27,125,-44,2,-57}), BitSet.valueOf(new byte[]{-68,65,7,110,102,-62,32,74,-102,-73,116,-34,79,-88,-112,120})}
+	};
+
 	public Empty(int x, int y) {
 		super('.');
 		value = new double[][]{
@@ -21,5 +32,9 @@ public class Empty extends Piece {
 	@Override
 	public Vector<Move> possibleMoves(int x, int y) {
 		return null;
+	}
+
+	public static BitSet getZobrist(int x, int y) {
+		return zobrist[y][x];
 	}
 }

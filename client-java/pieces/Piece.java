@@ -8,8 +8,7 @@ import java.util.Vector;
  */
 public abstract class Piece {
 	char type;
-	static double[][] value;
-	private static BitSet[][] zobrist;
+	protected static double[][] value;
 
 	public Piece(char type) {
 		this.type = type;
@@ -26,9 +25,5 @@ public abstract class Piece {
 			return value[(5*(y+1)) % 6][x];
 		}
 		return value[y][(4*(x+1)) % 5];
-	}
-
-	public static BitSet getZobrist(int x, int y) {
-		return zobrist[y][x];
 	}
 }
