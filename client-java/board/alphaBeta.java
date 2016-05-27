@@ -46,7 +46,7 @@ public class alphaBeta implements Runnable {
 				}
 			}
 		} else {
-			for (int i=4; i<20 && running; ++i) {
+			for (int i=1; i<20 && running; ++i) {
 				System.out.println("Depth: " + i);
 				for (String move : moves) {
 					//if (!running) return;
@@ -70,7 +70,8 @@ public class alphaBeta implements Runnable {
 						best = bestSoFar;
 						alpha = alphaSoFar;
 						System.out.println("Score: " + alphaSoFar + " New best move: " + bestSoFar);
-						if (Double.isInfinite(alpha) && alpha > 0) {
+						if (alpha > 2.147E9) {
+							running = false;
 							break;
 						}
 					}

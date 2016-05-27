@@ -8,7 +8,7 @@ import java.util.Vector;
  */
 public abstract class Piece {
 	char type;
-	protected static double[][] value;
+	protected double[][] value;
 
 	public Piece(char type) {
 		this.type = type;
@@ -20,7 +20,7 @@ public abstract class Piece {
 		return type;
 	}
 
-	public static double getValue(int x, int y, boolean white) {
+	public double getValue(int x, int y, boolean white) {
 		if (white) {
 			return value[(5*(y+1)) % 6][x];
 		}
