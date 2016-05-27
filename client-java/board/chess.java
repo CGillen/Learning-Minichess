@@ -1,6 +1,8 @@
 package board;
 
 import pieces.*;
+import transposition.Transposition;
+import transposition.ZobristHash;
 
 import java.util.*;
 
@@ -10,6 +12,8 @@ public class chess {
 	private static Piece[][] board;
 	private static Stack<Move> prevMoves = new Stack<>();
 	private static double bScore, wScore;
+	public static HashMap<BitSet, Transposition> transTable;
+	public static int abCalls;
 
 	public static void reset() {
 		// reset the state of the game / your internal variables - note that this function is highly dependent on your implementation
@@ -24,6 +28,9 @@ public class chess {
 				{new Pawn(0, 4, false), new Pawn(1, 4, false), new Pawn(2, 4, false), new Pawn(3, 4, false), new Pawn(4, 4, false)},
 				{new King(0, 5, false), new Queen(1, 5, false), new Bishop(2, 5, false), new Knight(3, 5, false), new Rook(4, 5, false)}
 		};
+		ZobristHash.init();
+		transTable = new HashMap<>();
+		abCalls = 0;
 	}
 	
 	public static String boardGet() {
@@ -343,6 +350,7 @@ public class chess {
 					wScore -= scoreCap;
 				}
 			}
+			ZobristHash.update(givenMove);
 		}
 	}
 

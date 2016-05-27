@@ -1,5 +1,9 @@
 package board;
 
+import transposition.Node;
+import transposition.Transposition;
+import transposition.ZobristHash;
+
 import java.util.Vector;
 
 import static board.chess.*;
@@ -66,6 +70,9 @@ public class alphaBeta implements Runnable {
 						best = bestSoFar;
 						alpha = alphaSoFar;
 						System.out.println("Score: " + alphaSoFar + " New best move: " + bestSoFar);
+						if (alpha == Double.POSITIVE_INFINITY) {
+							running = false;
+						}
 					}
 				}
 			}
@@ -76,6 +83,9 @@ public class alphaBeta implements Runnable {
 	}
 
 	private double moveAlphabetaRecursive(int depth, double alpha, double beta) {
+		double oldAlpha = alpha;
+		++chess.abCalls;
+
 		if (!running) return Double.NaN;
 		if (depth == 0 || winner() != '?') {
 			double eval = eval();
@@ -84,6 +94,19 @@ public class alphaBeta implements Runnable {
 			}
 			return eval;
 		}
+
+		// Load from transposition table
+		Transposition trans = chess.transTable.get(ZobristHash.getHash());
+		if (trans != null) {
+			if (trans.getDepth() > depth) {
+				switch (trans.getNode()) {
+					case EXACT: return trans.getScore();
+					case LOWER: alpha = Math.max(alpha, trans.getScore()); break;
+					case UPPER: beta = Math.min(beta, trans.getScore()); break;
+				}
+			}
+		}
+
 
 		double score = Double.NEGATIVE_INFINITY;
 		Vector<String> moves = movesShuffled();
@@ -103,6 +126,15 @@ public class alphaBeta implements Runnable {
 				break;
 			}
 		}
+
+		// Store to the transposition table
+		Node toStore = Node.EXACT;
+		if (score <= oldAlpha) {
+			toStore = Node.UPPER;
+		} else if (score >= beta) {
+			toStore = Node.LOWER;
+		}
+		chess.transTable.put(ZobristHash.getHash(), new Transposition(score, depth, toStore));
 
 		return (int)score;
 	}

@@ -1,5 +1,6 @@
 package pieces;
 
+import java.util.BitSet;
 import java.util.Vector;
 
 /**
@@ -7,7 +8,7 @@ import java.util.Vector;
  */
 public abstract class Piece {
 	char type;
-	double[][] value;
+	protected static double[][] value;
 
 	public Piece(char type) {
 		this.type = type;
@@ -19,7 +20,7 @@ public abstract class Piece {
 		return type;
 	}
 
-	public double getValue(int x, int y, boolean white) {
+	public static double getValue(int x, int y, boolean white) {
 		if (white) {
 			return value[(5*(y+1)) % 6][x];
 		}
