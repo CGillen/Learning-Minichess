@@ -46,7 +46,7 @@ public class alphaBeta implements Runnable {
 				}
 			}
 		} else {
-			for (int i=4; i<20 && running; ++i) {
+			for (int i=1; i<20 && running; ++i) {
 				System.out.println("Depth: " + i);
 				for (String move : moves) {
 					//if (!running) return;
@@ -88,9 +88,13 @@ public class alphaBeta implements Runnable {
 		if (!running) return Double.NaN;
 		if (depth == 0 || winner() != '?') {
 			double eval = eval();
-			//if (Double.isInfinite(eval)) {
-			//	return Double.NEGATIVE_INFINITY;
-			//}
+			if (Double.isInfinite(eval)) {
+				if (eval < 0) {
+					return Double.NEGATIVE_INFINITY;
+				} else {
+					return Double.POSITIVE_INFINITY;
+				}
+			}
 			return eval;
 		}
 
