@@ -70,7 +70,8 @@ public class alphaBeta implements Runnable {
 						best = bestSoFar;
 						alpha = alphaSoFar;
 						System.out.println("Score: " + alphaSoFar + " New best move: " + bestSoFar);
-						if (Double.isInfinite(alpha) && alpha > 0) {
+						if (alpha > 2.147E9) {
+							running = false;
 							break;
 						}
 					}
@@ -88,13 +89,9 @@ public class alphaBeta implements Runnable {
 		if (!running) return Double.NaN;
 		if (depth == 0 || winner() != '?') {
 			double eval = eval();
-			if (Double.isInfinite(eval)) {
-				if (eval < 0) {
-					return Double.NEGATIVE_INFINITY;
-				} else {
-					return Double.POSITIVE_INFINITY;
-				}
-			}
+			//if (Double.isInfinite(eval)) {
+			//	return Double.NEGATIVE_INFINITY;
+			//}
 			return eval;
 		}
 
