@@ -84,14 +84,13 @@ public class alphaBeta implements Runnable {
 
 	private double moveAlphabetaRecursive(int depth, double alpha, double beta) {
 		double oldAlpha = alpha;
-		//++chess.abCalls;
 
 		if (!running) return Double.NaN;
 		if (depth == 0 || winner() != '?') {
 			double eval = eval();
-			if (Double.isInfinite(eval)) {
-				return Double.NEGATIVE_INFINITY;
-			}
+			//if (Double.isInfinite(eval)) {
+			//	return Double.NEGATIVE_INFINITY;
+			//}
 			return eval;
 		}
 
@@ -136,6 +135,6 @@ public class alphaBeta implements Runnable {
 		}
 		chess.transTable.put(ZobristHash.getHash(), new Transposition(score, depth, toStore));
 
-		return (int)score;
+		return score;
 	}
 }

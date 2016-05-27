@@ -13,7 +13,6 @@ public class chess {
 	private static Stack<Move> prevMoves = new Stack<>();
 	private static double bScore, wScore;
 	public static HashMap<BitSet, Transposition> transTable;
-	public static int abCalls;
 
 	public static void reset() {
 		// reset the state of the game / your internal variables - note that this function is highly dependent on your implementation
@@ -30,7 +29,6 @@ public class chess {
 		};
 		ZobristHash.init();
 		transTable = new HashMap<>();
-		abCalls = 0;
 	}
 	
 	public static String boardGet() {
@@ -159,9 +157,16 @@ public class chess {
 	}
 
 	public static int eval() {
-	//	return evalRaw();
-		int score =  player.equals("W") ? (int)(wScore - bScore) : (int)(bScore - wScore);
-		return score;
+		return evalRaw();
+		// Incremental eval is broken
+	//	int score =  player.equals("W") ? (int)(wScore - bScore) : (int)(bScore - wScore);
+		/*
+		if (score != evalRaw()) {
+			System.out.println("Eval scores don't agree: ");
+			System.out.println(score + " : " + evalRaw());
+		}
+		*/
+	//	return score;
 	}
 
 	public static int evalRaw() {
@@ -172,13 +177,14 @@ public class chess {
 
 		for (int y=board.length-1; y>=0; --y) {
 			for (int x=0; x<board[0].length; ++x) {
-				if (!(board[y][x] instanceof King)) {
+				if (!(board[y][x] instanceof Empty)) {
 					if (Character.isUpperCase(board[y][x].getChar())) {
 						wSum += board[y][x].getValue(x, y, true);
 					} else {
 						bSum += board[y][x].getValue(x, y, false);
 					}
-				} else {
+				}
+				if (board[y][x] instanceof King){
 					if (Character.isUpperCase(board[y][x].getChar())) {
 						wKing = true;
 					} else {
@@ -228,30 +234,15 @@ public class chess {
 	public static Vector<ScoredMove> movesScored() {
 		// with reference to the state of the game and return the possible moves with the eval score of the board after the move
 
+		Vector<String> toConsider = moves();
 		Vector<ScoredMove> moves = new Vector<ScoredMove>();
-		Vector<Move> toConsider = null;
 		int score;
 
-		for (int y=board.length-1; y>=0; --y) {
-			for (int x=0; x<board[0].length; ++x) {
-				if (player.equals("W") && Character.isUpperCase(board[y][x].getChar())) {
-					toConsider = board[y][x].possibleMoves(x, y);
-					for (Move m : toConsider) {
-						move(m.toString());
-						score = eval();
-						undo();
-						moves.add(new ScoredMove(m, score));
-					}
-				} else if (player.equals("B") && Character.isLowerCase(board[y][x].getChar())) {
-					toConsider = board[y][x].possibleMoves(x, y);
-					for (Move m : toConsider) {
-						move(m.toString());
-						score = eval();
-						undo();
-						moves.add(new ScoredMove(m, score));
-					}
-				}
-			}
+		for (String m : toConsider) {
+			move(m);
+			score = eval();
+			moves.add(new ScoredMove(new Move(m), score));
+			undo();
 		}
 
 		return moves;
@@ -325,11 +316,32 @@ public class chess {
 			player = (player.equals("W")) ? "B" : "W";
 			prevMoves.push(givenMove);
 
+			/* // Incremental eval is broken
 			Piece pieceEnd = board[yEnd][xEnd];
 			double scorePre = piece.getValue(xStart, yStart, Character.isUpperCase(piece.getChar()));
 			double scorePost = pieceEnd.getValue(xEnd, yEnd, Character.isUpperCase(pieceEnd.getChar()));
 			double scoreCap = givenMove.capture.getValue(xEnd, yEnd, Character.isUpperCase(givenMove.capture.getChar()));
 
+			if (Character.isUpperCase(pieceChar)) {
+				wScore += scorePost;
+				wScore -= scorePre;
+				if (givenMove.capture instanceof King) {
+					bScore = Double.NEGATIVE_INFINITY;
+				} else {
+					bScore -= scoreCap;
+				}
+			} else {
+				bScore += scorePost;
+				bScore -= scorePre;
+				if (givenMove.capture instanceof King) {
+					wScore = Double.NEGATIVE_INFINITY;
+				} else {
+					wScore -= scoreCap;
+				}
+			}
+			*/
+
+			/*
 			if (Character.isUpperCase(pieceChar)) {
 				if (!(piece instanceof King)) {
 					wScore += scorePost - scorePre;
@@ -339,7 +351,6 @@ public class chess {
 				} else {
 					bScore -= scoreCap;
 				}
-
 			} else {
 				if (!(piece instanceof King)) {
 					bScore += scorePost - scorePre;
@@ -350,6 +361,7 @@ public class chess {
 					wScore -= scoreCap;
 				}
 			}
+			*/
 			ZobristHash.update(givenMove);
 		}
 	}
@@ -525,10 +537,27 @@ public class chess {
 		turn -= player.equals("W") ? 1 : 0;
 		player = (player.equals("W")) ? "B" : "W";
 
+		/* // Incremental eval is broken
 		double scorePre = toUndo.original.getValue(xStart, yStart, Character.isUpperCase(toUndo.original.getChar()));
 		double scorePost = pieceEnd.getValue(xEnd, yEnd, Character.isUpperCase(pieceEnd.getChar()));
 		double scoreCap = toUndo.capture.getValue(xEnd, yEnd, Character.isUpperCase(toUndo.capture.getChar()));
 
+		if (toUndo.capture instanceof King) {
+			evalRaw();
+		} else {
+			if (Character.isUpperCase(toUndo.original.getChar())) {
+				wScore -= scorePost;
+				wScore += scorePre;
+				bScore += scoreCap;
+			} else {
+				bScore -= scorePost;
+				bScore += scorePre;
+				wScore += scoreCap;
+			}
+		}
+		*/
+
+		/*
 		if (toUndo.capture instanceof King) {
 			evalRaw();
 		} else {
@@ -545,5 +574,6 @@ public class chess {
 				wScore += scoreCap;
 			}
 		}
+		*/
 	}
 }

@@ -21,6 +21,7 @@ public class King extends Piece {
 
 	public King(int x, int y, boolean white) {
 		super(white ? 'K' : 'k');
+		/*
 		value = new double[][]{
 				{Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY},
 				{Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY},
@@ -28,6 +29,15 @@ public class King extends Piece {
 				{Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY},
 				{Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY},
 				{Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY}
+		};
+		*/
+		value = new double[][]{
+				{-20, -20, -20, -20, -20},
+				{-10, -10, -10, -10, -10},
+				{-10, -10, -10, -10, -10},
+				{0, 0, 0, 0, 0},
+				{50, 50, 60, 70, 70},
+				{60, 70, 80, 90, 90}
 		};
 	}
 
