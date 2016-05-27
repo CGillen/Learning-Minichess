@@ -46,7 +46,7 @@ public class alphaBeta implements Runnable {
 				}
 			}
 		} else {
-			for (int i=4; i<15 && running; ++i) {
+			for (int i=4; i<20 && running; ++i) {
 				System.out.println("Depth: " + i);
 				for (String move : moves) {
 					//if (!running) return;
@@ -70,8 +70,8 @@ public class alphaBeta implements Runnable {
 						best = bestSoFar;
 						alpha = alphaSoFar;
 						System.out.println("Score: " + alphaSoFar + " New best move: " + bestSoFar);
-						if (alpha == Double.POSITIVE_INFINITY) {
-							running = false;
+						if (Double.isInfinite(alpha) && alpha > 0) {
+							break;
 						}
 					}
 				}
@@ -84,14 +84,13 @@ public class alphaBeta implements Runnable {
 
 	private double moveAlphabetaRecursive(int depth, double alpha, double beta) {
 		double oldAlpha = alpha;
-		++chess.abCalls;
 
 		if (!running) return Double.NaN;
 		if (depth == 0 || winner() != '?') {
 			double eval = eval();
-			if (Double.isInfinite(eval)) {
-				return Double.NEGATIVE_INFINITY;
-			}
+			//if (Double.isInfinite(eval)) {
+			//	return Double.NEGATIVE_INFINITY;
+			//}
 			return eval;
 		}
 
@@ -136,6 +135,6 @@ public class alphaBeta implements Runnable {
 		}
 		chess.transTable.put(ZobristHash.getHash(), new Transposition(score, depth, toStore));
 
-		return (int)score;
+		return score;
 	}
 }

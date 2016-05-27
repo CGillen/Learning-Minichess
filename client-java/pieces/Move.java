@@ -7,6 +7,10 @@ public class Move {
 	private int xStart, yStart, xEnd, yEnd;
 	public Piece capture, original;
 
+	public Move(String charIn) {
+		this((charIn.charAt(0) - 'a'), (Character.getNumericValue(charIn.charAt(1)) - 1), ((charIn.charAt(3) - 'a') - (charIn.charAt(0) - 'a')), ((Character.getNumericValue(charIn.charAt(4)) - 1) - (Character.getNumericValue(charIn.charAt(1)) - 1)));
+	}
+
 	public Move(int xStart, int yStart, int xMove, int yMove) {
 		this(xStart, yStart, xMove, yMove, '.', '.', true);
 	}

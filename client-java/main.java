@@ -1,5 +1,5 @@
 import board.chess;
-import pieces.Pawn;
+import pieces.*;
 
 import java.util.BitSet;
 import java.util.Random;
@@ -17,6 +17,45 @@ public class main {
 			assert main.strName.length() < 16;
 			assert main.strName.indexOf(" ") == -1;
 		}
+
+		/*
+		{
+			System.out.println(new Pawn(0, 1, true).getValue(0, 1, true));
+			System.out.println(new Pawn(1, 1, true).getValue(1, 1, true));
+			System.out.println(new Pawn(2, 1, true).getValue(2, 1, true));
+			System.out.println(new Pawn(3, 1, true).getValue(3, 1, true));
+			System.out.println(new Pawn(4, 1, true).getValue(4, 1, true));
+
+			System.out.println(new Rook(0, 0, true).getValue(0, 0, true));
+			System.out.println(new Knight(1, 0, true).getValue(1, 0, true));
+			System.out.println(new Bishop(2, 0, true).getValue(2, 0, true));
+			System.out.println(new Queen(3, 0, true).getValue(3, 0, true));
+			System.out.println(new King(4, 0, true).getValue(4, 0, true));
+
+			System.out.println(new Empty(4, 0).getValue(4, 0, false));
+			System.out.println(new Empty(4, 1).getValue(4, 1, false));
+			System.out.println(new Empty(4, 2).getValue(4, 2, false));
+			System.out.println(new Empty(4, 3).getValue(4, 3, false));
+			System.out.println(new Empty(4, 4).getValue(4, 4, false));
+			System.out.println(new Empty(5, 0).getValue(5, 0, false));
+			System.out.println(new Empty(4, 1).getValue(5, 1, false));
+			System.out.println(new Empty(4, 2).getValue(5, 2, false));
+			System.out.println(new Empty(4, 3).getValue(5, 3, false));
+			System.out.println(new Empty(4, 4).getValue(5, 4, false));
+
+			System.out.println(new Pawn(0, 4, true).getValue(0, 4, false));
+			System.out.println(new Pawn(1, 4, true).getValue(1, 4, false));
+			System.out.println(new Pawn(2, 4, true).getValue(2, 4, false));
+			System.out.println(new Pawn(3, 4, true).getValue(3, 4, false));
+			System.out.println(new Pawn(4, 4, true).getValue(4, 4, false));
+
+			System.out.println(new Rook(0, 5, true).getValue(4, 5, false));
+			System.out.println(new Knight(1, 5, true).getValue(3, 5, false));
+			System.out.println(new Bishop(2, 5, true).getValue(2, 5, false));
+			System.out.println(new Queen(3, 5, true).getValue(1, 5, false));
+			System.out.println(new King(4, 5, true).getValue(0, 5, false));
+		}
+		*/
 
 		/*
 		{
@@ -46,13 +85,10 @@ public class main {
 			}
 			System.out.print('\n');
 			System.out.println(set.toString());
-			System.out.println(new Pawn(0, 0, true).getValue(3, 1, true));
-			System.out.println(new Pawn(0, 0, true).getValue(1, 1, true));
-			System.out.println(new Pawn(0, 0, true).getValue(3, 4, false));
-			System.out.println(new Pawn(0, 0, true).getValue(1, 4, false));
 		}
 		*/
 
+		/*
 		{
 			int bWins = 0;
 			int sumABCalls = 0;
@@ -74,6 +110,7 @@ public class main {
 			System.out.println("Black wins: " + bWins);
 			System.out.println("10 games abCalls: " + sumABCalls);
 		}
+		*/
 
 		{
 			zeromq.start();
