@@ -70,6 +70,9 @@ public class alphaBeta implements Runnable {
 						best = bestSoFar;
 						alpha = alphaSoFar;
 						System.out.println("Score: " + alphaSoFar + " New best move: " + bestSoFar);
+						if (alpha == Double.POSITIVE_INFINITY) {
+							running = false;
+						}
 					}
 				}
 			}
@@ -81,6 +84,7 @@ public class alphaBeta implements Runnable {
 
 	private double moveAlphabetaRecursive(int depth, double alpha, double beta) {
 		double oldAlpha = alpha;
+		++chess.abCalls;
 
 		if (!running) return Double.NaN;
 		if (depth == 0 || winner() != '?') {

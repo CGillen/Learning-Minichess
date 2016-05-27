@@ -13,6 +13,7 @@ public class chess {
 	private static Stack<Move> prevMoves = new Stack<>();
 	private static double bScore, wScore;
 	public static HashMap<BitSet, Transposition> transTable;
+	public static int abCalls;
 
 	public static void reset() {
 		// reset the state of the game / your internal variables - note that this function is highly dependent on your implementation
@@ -29,6 +30,7 @@ public class chess {
 		};
 		ZobristHash.init();
 		transTable = new HashMap<>();
+		abCalls = 0;
 	}
 	
 	public static String boardGet() {

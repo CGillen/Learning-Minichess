@@ -55,6 +55,7 @@ public class main {
 
 		{
 			int bWins = 0;
+			int sumABCalls = 0;
 			long startTime = System.currentTimeMillis();
 
 			for (int i=0; i<10; ++i) {
@@ -65,11 +66,13 @@ public class main {
 					chess.moveGreedy();
 				}
 				if (chess.winner() == 'B') ++bWins;
+				sumABCalls += chess.abCalls;
 			}
 
 			long endTime = System.currentTimeMillis();
 			System.out.println("Average game time: " + ((endTime-startTime)/10));
 			System.out.println("Black wins: " + bWins);
+			System.out.println("10 games abCalls: " + sumABCalls);
 		}
 
 		{
