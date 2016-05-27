@@ -149,16 +149,16 @@ public class chess {
 	}
 
 	public static int eval() {
-		return evalRaw();
+		//return evalRaw();
 		// Incremental eval is broken
-	//	int score =  player.equals("W") ? (int)(wScore - bScore) : (int)(bScore - wScore);
+		int score =  player.equals("W") ? (int)(wScore - bScore) : (int)(bScore - wScore);
 		/*
 		if (score != evalRaw()) {
 			System.out.println("Eval scores don't agree: ");
 			System.out.println(score + " : " + evalRaw());
 		}
 		*/
-	//	return score;
+		return score;
 	}
 
 	public static int evalRaw() {
@@ -356,6 +356,7 @@ public class chess {
 				}
 			}
 			*/
+			evalRaw();
 			ZobristHash.update(givenMove);
 		}
 	}
