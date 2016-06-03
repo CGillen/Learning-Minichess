@@ -88,7 +88,7 @@ public class main {
 		}
 		*/
 
-
+		/*
 		{
 			int bWins = 0;
 			long startTime = System.currentTimeMillis();
@@ -107,7 +107,7 @@ public class main {
 			System.out.println("Average game time: " + ((endTime-startTime)/10));
 			System.out.println("Black wins: " + bWins);
 		}
-
+		*/
 
 		{
 			zeromq.start();

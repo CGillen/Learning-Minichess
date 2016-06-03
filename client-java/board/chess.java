@@ -476,11 +476,11 @@ public class chess {
 		abThread.start();
 
 		if (turn < 10) {
-			turnTime = 5000;
+			turnTime = 3000;
 		} else if (turn < 25) {
-			turnTime = 7000;
+			turnTime = 11000;
 		} else {
-			turnTime = 8500;
+			turnTime = 5000;
 		}
 		System.out.println("Running AlphaBeta for: " + turnTime + "ms.");
 
